@@ -1,0 +1,17 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": true,
+    "importHelpers": true,
+    "outDir": "dist",
+    "lib": ["es2015", "dom"],
+    "module": "es2015",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "target": "es2017",
+    "typeRoots": ["../node_modules/@types"]
+  },
+  "include": ["src"],
+  "exclude": ["dist/**/*", "spec/**/*"]
+}
