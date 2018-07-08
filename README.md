@@ -1,4 +1,4 @@
-# GeoFireX - Realitme GeoLocation Tools for Firestore with RxJS
+# GeoFireX - Realitme GeoLocation with Firestore & RxJS
 
 Live Demo
 
@@ -8,35 +8,34 @@ Live Demo
 npm install firebase geofirex
 ```
 
-The client is a lighweight wrapper for the Firebase SDK.
+The library is a lightweight client for the Firebase SDK that provides tools for handling geolocation data in Firestore.
 
 ```ts
 // Initnalize Firebase
-// var firebase = require('firebase/app')
 import * as firebase from 'firebase/app';
-firebase.initializeApp(config);
+firebase.initializeApp(yourConfig);
 
 // Initialize the client
 import * as geofirex from 'geofirex';
-const gfx = geofirex.init(firebase);
+const geo = geofirex.init(firebase);
 ```
 
 First, you'll need to add some geolocation data in your databse. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `geohash` method returns a class that helps you create geolocation data.
 
 ```ts
-const cities = gfx.collection('cities');
+const cities = geo.collection('cities');
 
-const location = gfx.geohash(40, -119);
+const point = geo.point(40, -119);
 
-cities.add({ name: 'Phoenix', location });
+cities.add({ name: 'Phoenix', position: point.data });
 ```
 
-Now let's make a query Firestore for _cities.location within 100km radius of a centerpoint_.
+Now let's make a query Firestore for _cities.position within 100km radius of a centerpoint_.
 
 ```ts
-const center = gfx.point(40.1, -119.1);
+const center = geo.point(40.1, -119.1);
 const radius = 100;
-const field = 'location';
+const field = 'position';
 
 const query = cities.within(center, radius, field);
 ```
@@ -45,39 +44,67 @@ The query returns a realtime Observable of the document data + some additional m
 
 ```ts
 query.subscribe(console.log);
-// { ...data, geoQueryData: { distance: 1.23232, bearing: 230.23 }  }
+// { ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }
 ```
 
 ## API
 
+Coming soon...
+
+### `init`
+
+Initializes the GeoFireClient
+
 ### `collection`
 
-Returns a collection reference with
-
-`within()` - Returns an Observable of queried based distance
-`data()` - Returns an Observable of queried documents mapped to the data payload
+Returns a GeoFireCollectionRef instance
 
 ### `point`
 
-Returns a GeoHash instance
-
-`data` - Returns data in recommended format for database writes
-`coords` - Returns [lat, lng]
-`hash` - Returns geohash string at precision 9
-`geoPoint` Returns a firebase GeoPoint object
-`geoJSON` Returns data as a GeoJSON `Feature<Point>`
-
-`distance(to)` Calulates the haversine distance to a point.
-`bearing(to)` Calulates the bearing to point to a point.
+Returns a GeoFirePoint instance
 
 ## Tips
 
-### Save the `gfx.point` data as a document field
+### Seeing this error: `DocumentReference.set() called with invalid data`
 
-I recommend
+Firestore writes cannot use custom classes, so make sure to call the `data` getter on the point.
+
+```ts
+const point = geo.point(40, -50);
+// This is an ERROR
+ref.add({ location: point });
+
+// This is GOOD
+ref.add({ location: point.data });
+```
+
+### Making Dynamic Reatime Queries the RxJS Way
+
+```ts
+const radius = new BehaviorSubject(1);
+const cities = db.collection('cities');
+
+const points = this.radius.pipe(
+  switchMap(rad => {
+    return cities.within(center, rad, 'point');
+  })
+);
+
+// Now update your query
+radius.next(23);
+```
+
+### Don't need a realtime stream? Use a Promise with async/await
+
+```ts
+import { get } from 'geofirex';
+
+async function getCars {
+    const query = geo.collection('cities').within(...)
+    const cities = await get(query)
+}
+```
 
 ### Always Order by `[Latitude, Longitude]`
 
 The GeoJSON spec formats coords as `[Longitude, Latitude]` to represent an X/Y plane. However, the Firebase GeoPoint uses `[Latitude, Longitude]`. For consistency, this libary will always require you to use the latter format.
-
-## Contribute
