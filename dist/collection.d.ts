@@ -77,7 +77,7 @@ export declare class GeoFireCollectionRef {
 export declare function toGeoJSON(field: string, includeProps?: boolean): any;
 /**
  * Helper function to convert any query from an RxJS Observable to a Promise
- * Example usage: await get( db.within(a, b, c) )
+ * Example usage: await get( collection.within(a, b, c) )
  * @param  {Observable<any>} observable
  * @returns {Promise<any>}
  */

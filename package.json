@@ -5,7 +5,14 @@
     "main": "dist/index.node.cjs.js",
     "module": "dist/index.esm.js",
     "types": "dist/index.d.ts",
-    "files": ["dist/**/*"],
+    "files": [
+        "dist/**/*",
+        "README.md"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/codediodeio/geofirex.git"
+    },
     "scripts": {
         "test": "jest --coverage",
         "test:watch": "jest --watchAll",

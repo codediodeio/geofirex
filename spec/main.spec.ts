@@ -134,8 +134,8 @@ describe('RxGeofire', () => {
       ref
         .data()
         .pipe(first())
-        .subscribe(val => {
-          expect(_.find(val, { id: 'phoenix' })).toBeUndefined();
+        .subscribe(arr => {
+          expect(_.find(arr, val => val.id === 'phoenix')).toBeUndefined();
           done();
         });
     });

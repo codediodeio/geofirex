@@ -1,6 +1,8 @@
-# GeoFireX - Realitme GeoLocation with Firestore & RxJS
+# GeoFireX
 
-Live Demo
+Realtime Geolocation with Firestore & RxJS
+
+[Live Demo](https://geo-test-c92e4.firebaseapp.com)
 
 ## QuickStart
 
@@ -20,7 +22,7 @@ import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 ```
 
-First, you'll need to add some geolocation data in your databse. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `geohash` method returns a class that helps you create geolocation data.
+First, you'll need to add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `geohash` method returns a class that helps you create geolocation data.
 
 ```ts
 const cities = geo.collection('cities');
@@ -49,7 +51,7 @@ query.subscribe(console.log);
 
 ## API
 
-Coming soon...
+Better docs soon...
 
 ### `init`
 
