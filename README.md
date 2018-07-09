@@ -13,11 +13,11 @@ npm install firebase geofirex
 The library is a lightweight client for the Firebase SDK that provides tools for handling geolocation data in Firestore.
 
 ```ts
-// Initnalize Firebase
+// Init Firebase
 import * as firebase from 'firebase/app';
 firebase.initializeApp(yourConfig);
 
-// Initialize the client
+// Init GeoFireX
 import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 ```
@@ -46,7 +46,7 @@ The query returns a realtime Observable of the document data + some additional m
 
 ```ts
 query.subscribe(console.log);
-// { ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }
+// [{ ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }]
 ```
 
 ## API
@@ -84,7 +84,7 @@ ref.add({ location: point.data });
 
 ```ts
 const radius = new BehaviorSubject(1);
-const cities = db.collection('cities');
+const cities = geo.collection('cities');
 
 const points = this.radius.pipe(
   switchMap(rad => {
