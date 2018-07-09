@@ -1,11 +1,10 @@
 import { firestore } from './interfaces';
 
 import { Observable, combineLatest } from 'rxjs';
-import { shareReplay, map, first, distinct } from 'rxjs/operators';
+import { shareReplay, map, first } from 'rxjs/operators';
 import { GeoFirePoint, Latitude, Longitude } from './geohash';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
-// import isEqual from 'lodash.isequal';
 
 export type QueryFn = (ref: firestore.CollectionReference) => firestore.Query;
 
@@ -97,6 +96,10 @@ export class GeoFireCollectionRef {
     this.stream = createStream(this.query || this.ref).pipe(shareReplay(1));
   }
 
+  obsv() {
+    return new Observable();
+  }
+
   // GEO QUERIES
   /**
    * Queries the Firestore collection based on geograpic radius
@@ -118,13 +121,10 @@ export class GeoFireCollectionRef {
 
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
-      return createStream(query).pipe(
-        snapToData()
-        // distinct(isEqual)
-      );
+      return createStream(query).pipe(snapToData());
     });
 
-    return combineLatest(...queries).pipe(
+    const combo = combineLatest(...queries).pipe(
       map(arr => {
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
         return reduced
@@ -146,6 +146,8 @@ export class GeoFireCollectionRef {
       }),
       shareReplay(1)
     );
+
+    return combo;
   }
 
   private queryPoint(geohash: string, field: string) {

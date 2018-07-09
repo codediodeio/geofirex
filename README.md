@@ -71,13 +71,13 @@ const collection = geo.collection('cities', ref => ref.where('zip', '==', 90201)
 
 #### Performing Geo-Queries
 
-`collection.within(center: _GeoFirePoint_, radius: _`number`_, field: _`string`_, opts?: GeoQueryOptions):`Observable`<`object`[]>`
+`collection.within(center: GeoFirePoint, radius: number, field: string)`
 
-Query by geographic distance. `within` queries parent Firestore collection for documents that exist within X kilometers of the centerpoint.
+Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
 
-Each doc also contains returns distance and bearing calculated on the query on the `queryMetadata` property.
+Each doc also contains returns _distance_ and _bearing_ calculated on the query on the `queryMetadata` property.
 
-**Returns:** `Observable`<`object`[]>
+**Returns:** `Observable<object[]>`
 
 #### Write Data
 

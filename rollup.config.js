@@ -14,14 +14,6 @@ const external = ['firebase/app']
 
 export default {
     input: './src/index.ts',
-    // output: {
-    //     file: 'dist/bundle.js',
-    //     format: 'umd',
-    //     sourcemap: true,
-    //     extend: true,
-    //     name: 'gfx',
-    //     external: ['firebase']
-    // },
     output: [{
             file: pkg.main,
             format: 'cjs',
@@ -41,7 +33,6 @@ export default {
         }),
         resolve(),
         cjs(),
-        sizes(),
-        uglify()
+        sizes()
     ]
 };
