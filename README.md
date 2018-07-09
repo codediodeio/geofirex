@@ -97,11 +97,11 @@ In addition to Geo-Queries, you can also read the collection like you would norm
 - `collection.data()`- Observable of document data
 - `collection.snapshot()`- Observable of Firestore QuerySnapshot
 
-### `point`
+### `point(latitude: number, longitude: number)`
 
 Returns a GeoFirePoint allowing you to create geohashes, format data, and calculate relative distance/bearing.
 
-`geo.point(latitude, longitude)`
+Example: `const point = geo.point(38, -119)`
 
 #### Getters
 
