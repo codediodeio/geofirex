@@ -10,6 +10,8 @@ Realtime Geolocation with Firestore & RxJS
 npm install firebase geofirex
 ```
 
+#### Initialize
+
 The library is a lightweight client for the Firebase SDK that provides tools for handling geolocation data in Firestore.
 
 ```ts
@@ -22,6 +24,8 @@ import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 ```
 
+#### Write Geo Data
+
 First, you'll need to add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `geohash` method returns a class that helps you create geolocation data.
 
 ```ts
@@ -31,6 +35,8 @@ const point = geo.point(40, -119);
 
 cities.add({ name: 'Phoenix', position: point.data });
 ```
+
+#### Query Geo Data
 
 Now let's make a query Firestore for _cities.position within 100km radius of a centerpoint_.
 
@@ -53,17 +59,62 @@ query.subscribe(console.log);
 
 Better docs soon...
 
-### `init`
+### `init(app: FirebaseApp)`
 
 Initializes the GeoFireClient
 
+```ts
+import * as firebase from 'firebase/app';
+import * as geofirex from 'geofirex';
+firebase.initializeApp(yourConfig);
+
+const geo = geofirex.init(firebase);
+```
+
 ### `collection`
 
-Returns a GeoFireCollectionRef instance
+Creates reference to a Firestore collection that can be used to make geo-queries and perform writes If you pass a query, any subsequent geo-queries will be limited to this subset of documents
+
+**Parameters:**
+
+| Param            | Type     | Description                  |
+| ---------------- | -------- | ---------------------------- |
+| path             | `string` | path to collection           |
+| `Optional` query | QueryFn  | callback for firestore query |
+
+#### collection.within(center: _GeoFirePoint_, radius: _`number`_, field: _`string`_, opts?: GeoQueryOptions): `Observable`<`object`[]>`
+
+Queries the Firestore collection based on geograpic radius
+
+**Parameters:**
+
+| Param                | Type            | Default value | Description                                               |
+| -------------------- | --------------- | ------------- | --------------------------------------------------------- |
+| center               | GeoFirePoint    | -             | the starting point for the query, i.e geo.point(lat, lng) |
+| radius               | `number`        | -             | the radius to search from the centerpoint                 |
+| field                | `string`        | -             | the document field that contains the GeoFirePoint data    |
+| `Default value` opts | GeoQueryOptions | defaultOpts   |
+
+**Returns:** `Observable`<`object`[]>
 
 ### `point`
 
-Returns a GeoFirePoint instance
+Returns a GeoFirePoint allowing you to create geohashes, format data, and calculate relative distance/bearing.
+
+`geo.point(latitude, longitude)`
+
+#### Getters
+
+- `hash` Returns a geohash string at precision 9
+- `geoPoint` Returns a Firestore GeoPoint
+- `geoJSON` Returns data as a GeoJSON `Feature<Point>`
+- `coords` Returns coordinates as `[latitude, longitude]`
+- `data` Returns data object suitable for saving to the Firestore database
+
+#### Geo Calculations
+
+- `distance(latitude, longitude)` Haversine distance to a point
+- `bearing(latitude, longitude)` Haversine bearing to a point
 
 ## Tips
 
