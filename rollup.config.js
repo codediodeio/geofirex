@@ -10,7 +10,7 @@ const globals = {
     rxjs: 'rxjs',
     'rxjs/operators': 'rxjs.operators',
 }
-const external = ['firebase/app']
+const external = ['firebase/app', 'rxjs']
 
 export default {
     input: './src/index.ts',
@@ -29,9 +29,11 @@ export default {
     external,
     plugins: [
         typescript({
-            typescript: require('typescript')
+            // typescript: require('typescript')
         }),
-        resolve(),
+        resolve({
+            only: [/^@turf\/.*$/]
+        }),
         cjs(),
         sizes()
     ]

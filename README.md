@@ -26,7 +26,7 @@ const geo = geofirex.init(firebase);
 
 #### Write Geo Data
 
-First, you'll need to add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `geohash` method returns a class that helps you create geolocation data.
+First, you'll need to add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `point` method returns a class that helps you create geolocation data.
 
 ```ts
 const cities = geo.collection('cities');
