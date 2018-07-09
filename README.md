@@ -57,45 +57,45 @@ query.subscribe(console.log);
 
 ## API
 
-Better docs soon...
+Better docs soon, code is well-documented via typings...
 
-### `init(app: FirebaseApp)`
+### `collection(path: string, query? QueryFn)`
 
-Initializes the GeoFireClient
+Creates reference to a Firestore collection that can be used to make geo-queries and perform writes If you pass an optional Firestore query function, all subsequent geo-queries will be limited to this subset of documents
 
-```ts
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
-firebase.initializeApp(yourConfig);
+Example:
 
-const geo = geofirex.init(firebase);
+```
+const collection = geo.collection('cities', ref => ref.where('zip', '==', 90201) )
 ```
 
-### `collection`
+#### Performing Geo-Queries
 
-Creates reference to a Firestore collection that can be used to make geo-queries and perform writes If you pass a query, any subsequent geo-queries will be limited to this subset of documents
+`collection.within(center: _GeoFirePoint_, radius: _`number`_, field: _`string`_, opts?: GeoQueryOptions):`Observable`<`object`[]>`
 
-**Parameters:**
+Query by geographic distance. `within` queries parent Firestore collection for documents that exist within X kilometers of the centerpoint.
 
-| Param            | Type     | Description                  |
-| ---------------- | -------- | ---------------------------- |
-| path             | `string` | path to collection           |
-| `Optional` query | QueryFn  | callback for firestore query |
-
-#### collection.within(center: _GeoFirePoint_, radius: _`number`_, field: _`string`_, opts?: GeoQueryOptions): `Observable`<`object`[]>`
-
-Queries the Firestore collection based on geograpic radius
-
-**Parameters:**
-
-| Param                | Type            | Default value | Description                                               |
-| -------------------- | --------------- | ------------- | --------------------------------------------------------- |
-| center               | GeoFirePoint    | -             | the starting point for the query, i.e geo.point(lat, lng) |
-| radius               | `number`        | -             | the radius to search from the centerpoint                 |
-| field                | `string`        | -             | the document field that contains the GeoFirePoint data    |
-| `Default value` opts | GeoQueryOptions | defaultOpts   |
+Each doc also contains returns distance and bearing calculated on the query on the `queryMetadata` property.
 
 **Returns:** `Observable`<`object`[]>
+
+#### Write Data
+
+Write data just like you would in Firestore
+
+`collection.add(data)`
+
+Or use one of the client's conveniece methods
+
+- `collection.setDoc(id, data)` - Set a document in the collection with an ID.
+- `collection.setPoint(lat, lng)` - Non-destructive update with a GeoFirePoint
+
+#### Read Data
+
+In addition to Geo-Queries, you can also read the collection like you would normally in Firestore, but as an Observable
+
+- `collection.data()`- Observable of document data
+- `collection.snapshot()`- Observable of Firestore QuerySnapshot
 
 ### `point`
 
@@ -105,16 +105,16 @@ Returns a GeoFirePoint allowing you to create geohashes, format data, and calcul
 
 #### Getters
 
-- `hash` Returns a geohash string at precision 9
-- `geoPoint` Returns a Firestore GeoPoint
-- `geoJSON` Returns data as a GeoJSON `Feature<Point>`
-- `coords` Returns coordinates as `[latitude, longitude]`
-- `data` Returns data object suitable for saving to the Firestore database
+- `point.hash` Returns a geohash string at precision 9
+- `point.geoPoint` Returns a Firestore GeoPoint
+- `point.geoJSON` Returns data as a GeoJSON `Feature<Point>`
+- `point.coords` Returns coordinates as `[latitude, longitude]`
+- `point.data` Returns data object suitable for saving to the Firestore database
 
 #### Geo Calculations
 
-- `distance(latitude, longitude)` Haversine distance to a point
-- `bearing(latitude, longitude)` Haversine bearing to a point
+- `point.distance(latitude, longitude)` Haversine distance to a point
+- `point.bearing(latitude, longitude)` Haversine bearing to a point
 
 ## Tips
 
