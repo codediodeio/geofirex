@@ -4,7 +4,15 @@ Realtime Geolocation with Firestore & RxJS
 
 [Live Demo](https://geo-test-c92e4.firebaseapp.com)
 
-## QuickStart
+<p align="center">
+
+<a href="https://slackin-pbfjhfxnsa.now.sh"><img src="https://slackin-pbfjhfxnsa.now.sh/badge.svg"></a>
+
+<!-- <a href="https://circleci.com/gh/codediodeio/angular-firestarter"><img src="https://circleci.com/gh/codediodeio/angular-firestarter.svg?style=svg"></a> -->
+
+</p>
+
+## :checkered_flag: QuickStart
 
 ```shell
 npm install firebase geofirex
@@ -55,7 +63,7 @@ query.subscribe(console.log);
 // [{ ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }]
 ```
 
-## API
+## :notebook: API
 
 ### `collection(path: string, query? QueryFn)`
 
@@ -114,7 +122,7 @@ Example: `const point = geo.point(38, -119)`
 - `point.distance(latitude, longitude)` Haversine distance to a point
 - `point.bearing(latitude, longitude)` Haversine bearing to a point
 
-## Tips
+## :zap: Tips
 
 ### Seeing this error: `DocumentReference.set() called with invalid data`
 

@@ -13,6 +13,16 @@ export interface GeoQueryOptions {
 }
 const defaultOpts: GeoQueryOptions = { units: 'km' };
 
+export interface QueryMetadata {
+  bearing: number;
+  distance: number;
+}
+
+export interface GeoQueryDocument {
+  [key: string]: any;
+  queryMetadata: QueryMetadata;
+}
+
 export class GeoFireCollectionRef {
   private ref: firestore.CollectionReference;
   private query: firestore.Query;
@@ -72,7 +82,7 @@ export class GeoFireCollectionRef {
    * @param  {string} id document id
    * @param  {Latitude} latitude
    * @param  {Longitude} longitude
-   * @param  {string='point'} field optional field to set data to
+   * @param  {string} field optional name of the document property, defaults to 'point'
    * @returns {Promise<void>}
    */
   setPoint(
@@ -103,14 +113,14 @@ export class GeoFireCollectionRef {
    * @param  {number} radius the radius to search from the centerpoint
    * @param  {string} field the document field that contains the GeoFirePoint data
    * @param  {GeoQueryOptions} opts=defaultOpts
-   * @returns {Observable<any>}
+   * @returns {Observable<GeoQueryDocument>}
    */
   within(
     center: GeoFirePoint,
     radius: number,
     field: string,
     opts = defaultOpts
-  ) {
+  ): Observable<GeoQueryDocument[]> {
     const precision = setPrecsion(radius);
     const centerHash = center.hash.substr(0, precision);
     const area = GeoFirePoint.neighbors(centerHash).concat(centerHash);
@@ -180,17 +190,9 @@ function snapToData(id = 'id') {
 }
 
 /**
-internal use only
+internal, do not use
  */
 function createStream(input): Observable<any> {
-  // return Observable.create(observer => {
-  //   input.onSnapshot({
-  //     next(val) {
-  //       observer.next(val);
-  //     }
-  //   });
-  // });
-
   return new Observable(observer => {
     const unsubscribe = input.onSnapshot(observer);
     return { unsubscribe };
