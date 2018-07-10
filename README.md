@@ -57,8 +57,6 @@ query.subscribe(console.log);
 
 ## API
 
-Better docs soon, code is well-documented via typings...
-
 ### `collection(path: string, query? QueryFn)`
 
 Creates reference to a Firestore collection that can be used to make geo-queries and perform writes If you pass an optional Firestore query function, all subsequent geo-queries will be limited to this subset of documents
@@ -131,7 +129,7 @@ ref.add({ location: point });
 ref.add({ location: point.data });
 ```
 
-### Making Dynamic Reatime Queries the RxJS Way
+### Make Dynamic Queries the RxJS Way
 
 ```ts
 const radius = new BehaviorSubject(1);
