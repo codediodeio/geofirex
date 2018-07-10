@@ -1,0 +1,23 @@
+agm-map {
+    width: 100vw;
+    height: 100vh;
+}
+
+.tools {
+    z-index: 9999;
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    background: #fff;
+    padding: 10px
+}
+
+button {
+    display: block;
+    margin-top: 10px
+}
+
+.doc {
+    font-weight: 1.2em;
+    font-weight: bold;
+}
