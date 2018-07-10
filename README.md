@@ -151,8 +151,8 @@ radius.next(23);
 import { get } from 'geofirex';
 
 async function getCars {
-    const query = geo.collection('cities').within(...)
-    const cities = await get(query)
+    const query = geo.collection('cars').within(...)
+    const cars = await get(query)
 }
 ```
 

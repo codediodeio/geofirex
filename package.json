@@ -1,6 +1,6 @@
 {
     "name": "geofirex",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Realtime Firestore GeoQueries with RxJS",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.js",
@@ -31,7 +31,6 @@
     ],
     "author": "Jeff Delaney",
     "license": "ISC",
-    "dependencies": {},
     "peerDependencies": {
         "rxjs": "^6.2.1",
         "firebase": "5.2.0"

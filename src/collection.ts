@@ -6,10 +6,6 @@ import { GeoFirePoint, Latitude, Longitude } from './geohash';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
 
-// import symbolObservable from 'symbol-observable';
-
-// console.log(symbolObservable);
-
 export type QueryFn = (ref: firestore.CollectionReference) => firestore.Query;
 
 export interface GeoQueryOptions {
