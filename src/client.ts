@@ -6,7 +6,7 @@ import { GeoFirePoint } from './geohash';
 export class GeoFireClient {
   constructor(private app: firestore.FirebaseApp) {}
   /**
-   * Creates reference to a Firestre collection that can be used to make geo-queries and perform writes
+   * Creates reference to a Firestore collection that can be used to make geo-queries and perform writes
    * If you pass a query, any subsequent geo-queries will be limited to this subset of documents
    * @param  {string} path path to collection
    * @param  {QueryFn} query? Firestore query id ref => ref.orderBy('foo').limit(5)

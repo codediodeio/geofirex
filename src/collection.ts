@@ -96,10 +96,6 @@ export class GeoFireCollectionRef {
     this.stream = createStream(this.query || this.ref).pipe(shareReplay(1));
   }
 
-  obsv() {
-    return new Observable();
-  }
-
   // GEO QUERIES
   /**
    * Queries the Firestore collection based on geograpic radius
@@ -187,12 +183,17 @@ function snapToData(id = 'id') {
 internal use only
  */
 function createStream(input): Observable<any> {
-  return Observable.create(observer => {
-    input.onSnapshot({
-      next(val) {
-        observer.next(val);
-      }
-    });
+  // return Observable.create(observer => {
+  //   input.onSnapshot({
+  //     next(val) {
+  //       observer.next(val);
+  //     }
+  //   });
+  // });
+
+  return new Observable(observer => {
+    const unsubscribe = input.onSnapshot(observer);
+    return { unsubscribe };
   });
 }
 /**

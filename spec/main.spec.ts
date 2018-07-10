@@ -8,8 +8,8 @@ import 'jest';
 
 import { GeoFirePoint } from '../src/geohash';
 import { GeoFireCollectionRef, toGeoJSON, get } from '../src/collection';
-import { Observable } from 'rxjs';
-import { first, take } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { first, take, switchMap } from 'rxjs/operators';
 
 import { GeoFireClient } from '../src/client';
 
@@ -26,6 +26,7 @@ describe('RxGeofire', () => {
 
   test('says hello', () => {
     expect(firebase.apps.length).toBe(1);
+    expect(gfx.app).toBe(firebase);
   });
 
   describe('GeoHash', () => {
@@ -166,6 +167,22 @@ describe('RxGeofire', () => {
 
       const val = await resolve(query);
       expect(val.length).toBe(16);
+      done();
+    });
+
+    test('should work with switchMap', async done => {
+      const rad = new BehaviorSubject(0.5);
+
+      const query = rad.pipe(
+        switchMap(n => {
+          return ref.within(center, n, 'pos');
+        })
+      );
+
+      expect(query).toBeInstanceOf(Observable);
+
+      const val = await resolve(query);
+      expect(val.length).toBe(4);
       done();
     });
 
