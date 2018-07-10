@@ -1,26 +1,29 @@
-# GeoFireX
-
-Realtime Geolocation with Firestore & RxJS
-
-[Live Demo](https://geo-test-c92e4.firebaseapp.com)
-
 <p align="center">
 
 <a href="https://slackin-pbfjhfxnsa.now.sh"><img src="https://slackin-pbfjhfxnsa.now.sh/badge.svg"></a>
 
-<!-- <a href="https://circleci.com/gh/codediodeio/angular-firestarter"><img src="https://circleci.com/gh/codediodeio/angular-firestarter.svg?style=svg"></a> -->
+<a href="https://circleci.com/gh/codediodeio/geofirex"><img src="https://circleci.com/gh/codediodeio/geofirex.svg?style=svg"></a>
 
 </p>
+
+# GeoFireX
+
+Realtime Geolocation with Firestore & RxJS
+
+:point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
 
 ## :checkered_flag: QuickStart
 
 ```shell
-npm install firebase geofirex
+npm install geofirex
+
+# peer dependencies
+npm install rxjs firebase
 ```
 
-#### Initialize
+### Initialize
 
-The library is a lightweight client for the Firebase SDK that provides tools for handling geolocation data in Firestore.
+The library is a lightweight client for the Firebase Web SDK that provides tools for wrangling geolocation data in Firestore. You need a [Firebase project](https://firebase.google.com/docs/storage/web/start) to get started.
 
 ```ts
 // Init Firebase
@@ -32,9 +35,9 @@ import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 ```
 
-#### Write Geo Data
+### Write Geo Data
 
-First, you'll need to add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geoquery features. The `point` method returns a class that helps you create geolocation data.
+Next, add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geolocation tools. The `point` method returns a class that helps you create geolocation data.
 
 ```ts
 const cities = geo.collection('cities');
@@ -44,9 +47,13 @@ const point = geo.point(40, -119);
 cities.add({ name: 'Phoenix', position: point.data });
 ```
 
-#### Query Geo Data
+Calling `point.data` returns an object that contains a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). It should look like this in your database. You can name the object whatever you want and even save multiple points on a single document.
 
-Now let's make a query Firestore for _cities.position within 100km radius of a centerpoint_.
+![](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/point1.png?alt=media&token=0c833700-3dbd-476a-99a9-41c1143dbe97)
+
+### Query Geo Data
+
+Now let's query Firestore for _cities.position within 100km radius of a centerpoint_.
 
 ```ts
 const center = geo.point(40.1, -119.1);
@@ -56,12 +63,16 @@ const field = 'position';
 const query = cities.within(center, radius, field);
 ```
 
-The query returns a realtime Observable of the document data + some additional metadata.
+The query returns a realtime Observable of the document data, plus some useful metadata like _distance_ and _bearing_ from the query centerpoint.
 
 ```ts
 query.subscribe(console.log);
 // [{ ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }]
 ```
+
+You now have a realtime stream of data to visualize on a map.
+
+![](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/geoquery-fire2.gif?alt=media&token=487abd17-90a3-4589-a82d-81d172ddeb25)
 
 ## :notebook: API
 
@@ -71,8 +82,8 @@ Creates reference to a Firestore collection that can be used to make geo-queries
 
 Example:
 
-```
-const collection = geo.collection('cities', ref => ref.where('zip', '==', 90201) )
+```ts
+const collection = geo.collection('cities');
 ```
 
 #### Performing Geo-Queries
@@ -122,7 +133,54 @@ Example: `const point = geo.point(38, -119)`
 - `point.distance(latitude, longitude)` Haversine distance to a point
 - `point.bearing(latitude, longitude)` Haversine bearing to a point
 
+## :pizza: Additional Features
+
+The goal of this package is to facilitate rapid feature development with tools like MapBox, Google Maps, and D3.js. If you have an idea for a useful feature, open an issue.
+
+### `toGeoJSON` Operator
+
+A custom RxJS operator that transforms a collection into a [GeoJSON FeatureCollection](https://macwright.org/2015/03/23/geojson-second-bite.html#featurecollection). Very useful for tools like [MapBox](https://blog.mapbox.com/real-time-maps-for-live-events-fad0b334e4e) that can use GeoJSON to update a realtime data source.
+
+```ts
+const query = geo.collection('cars').within(...)
+
+query.pipe( getGeoJSON() )
+
+// Emits a single object typed as a FeatureCollection<Geometry>
+{
+  "type": "FeatureCollection",
+  "features": [...]
+}
+```
+
+#### Promises with `get`
+
+Don't need a realtime stream? Convert any query observable to a promise by wrapping it with `get`.
+
+```ts
+import { get } from 'geofirex';
+
+async function getCars {
+    const query = geo.collection('cars').within(...)
+    const cars = await get(query)
+}
+```
+
 ## :zap: Tips
+
+### Scale to Massive Collections
+
+It's possibe to build Firestore collections with billions of documents. One of the main motivations of this project was to make geoqueries possible on a queried subset of data. You can make a regular Firestore query on collection by passing a callback as the second argument, then all geoqueries will scoped these contstraints.
+
+Example:
+
+```ts
+const users = geo.collection('users', ref =>
+  ref.where('status', '==', 'online').limit(1000)
+);
+
+const nearbyOnlineUsers = users.within(center, radius, field);
+```
 
 ### Seeing this error: `DocumentReference.set() called with invalid data`
 
@@ -151,17 +209,6 @@ const points = this.radius.pipe(
 
 // Now update your query
 radius.next(23);
-```
-
-### Don't need a realtime stream? Use a Promise with async/await
-
-```ts
-import { get } from 'geofirex';
-
-async function getCars {
-    const query = geo.collection('cars').within(...)
-    const cars = await get(query)
-}
 ```
 
 ### Always Order by `[Latitude, Longitude]`
