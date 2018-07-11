@@ -4,6 +4,7 @@ import { switchMap, tap, map, take, finalize } from 'rxjs/operators';
 import * as firebaseApp from 'firebase/app';
 import * as geofirex from 'geofirex';
 import { GeoFireCollectionRef } from 'geofirex';
+import { Point, Feature } from 'geojson';
 
 @Component({
   selector: 'app-realtime-geoquery',

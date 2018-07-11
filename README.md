@@ -182,6 +182,16 @@ const users = geo.collection('users', ref =>
 const nearbyOnlineUsers = users.within(center, radius, field);
 ```
 
+### Usage with RxJS < 6.2, or Ionic v3
+
+This package requires RxJS 6.2, but you can still use it with older versions without blowing up you app by installing rxjs-compat.
+
+Example:
+
+```shell
+npm i rxjs@latest rxjs-compat
+```
+
 ### Seeing this error: `DocumentReference.set() called with invalid data`
 
 Firestore writes cannot use custom classes, so make sure to call the `data` getter on the point.

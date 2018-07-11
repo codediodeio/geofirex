@@ -1,6 +1,5 @@
-import { firestore } from './interfaces';
+import { firestore, Point, Feature } from './interfaces';
 
-import { Point, Feature } from 'geojson';
 import { neighbors, encode, flip } from './util';
 
 import distance from '@turf/distance';
