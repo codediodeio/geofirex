@@ -2,7 +2,7 @@ import { firestore } from './interfaces';
 
 import { Observable, combineLatest } from 'rxjs';
 import { shareReplay, map, first } from 'rxjs/operators';
-import { GeoFirePoint, Latitude, Longitude } from './geohash';
+import { GeoFirePoint, Latitude, Longitude } from './point';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
 
@@ -80,16 +80,16 @@ export class GeoFireCollectionRef {
   /**
    * Create or update a document with GeoFirePoint data
    * @param  {string} id document id
+   * @param  {string} field name of point on the doc
    * @param  {Latitude} latitude
    * @param  {Longitude} longitude
-   * @param  {string} field optional name of the document property, defaults to 'point'
    * @returns {Promise<void>}
    */
   setPoint(
     id: string,
+    field: string,
     latitude: Latitude,
-    longitude: Longitude,
-    field: string = 'point'
+    longitude: Longitude
   ) {
     const point = new GeoFirePoint(this.app, latitude, longitude).data;
     return this.ref.doc(id).set({ [field]: point }, { merge: true });
@@ -113,7 +113,7 @@ export class GeoFireCollectionRef {
    * @param  {number} radius the radius to search from the centerpoint
    * @param  {string} field the document field that contains the GeoFirePoint data
    * @param  {GeoQueryOptions} opts=defaultOpts
-   * @returns {Observable<GeoQueryDocument>}
+   * @returns {Observable<GeoQueryDocument>} sorted by nearest to farthest
    */
   within(
     center: GeoFirePoint,
@@ -137,7 +137,7 @@ export class GeoFireCollectionRef {
           .filter(val => {
             const lat = val[field].geopoint.latitude;
             const lng = val[field].geopoint.longitude;
-            return center.distance(lat, lng) <= radius * 1.05; // buffer for edge distances;
+            return center.distance(lat, lng) <= radius * 1.02; // buffer for edge distances;
           })
 
           .map(val => {
@@ -148,13 +148,17 @@ export class GeoFireCollectionRef {
               bearing: center.bearing(lat, lng)
             };
             return { ...val, queryMetadata };
-          });
+          })
+
+          .sort((a, b) => a.queryMetadata.distance - b.queryMetadata.distance);
       }),
       shareReplay(1)
     );
 
     return combo;
   }
+
+  first() {}
 
   private queryPoint(geohash: string, field: string) {
     const end = geohash + '~';

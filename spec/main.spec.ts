@@ -1,14 +1,14 @@
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
-import { config } from './util';
+import { config, mockResponse } from './util';
 
 import * as _ from 'lodash';
 import 'jest';
 
-import { GeoFirePoint } from '../src/geohash';
+import { GeoFirePoint } from '../src/point';
 import { GeoFireCollectionRef, toGeoJSON, get } from '../src/collection';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { first, take, switchMap } from 'rxjs/operators';
 
 import { GeoFireClient } from '../src/client';
@@ -153,12 +153,24 @@ describe('RxGeofire', () => {
     });
   });
 
-  describe('geoqueries', () => {
+  describe('within(...) queries', () => {
     let ref: GeoFireCollectionRef;
     let center;
     beforeEach(() => {
       ref = gfx.collection('bearings');
       center = gfx.point(40.5, -80.0);
+    });
+
+    test('work with compound Firestore queries', async done => {
+      const ref = gfx.collection('compound', ref =>
+        ref.where('color', '==', 'blue')
+      );
+      const point = gfx.point(38, -119);
+      const query = ref.within(point, 50, 'point');
+
+      const val = await resolve(query);
+      expect(val.length).toBe(1);
+      done();
     });
 
     test('should return 16 positions within 10km radius', async done => {
@@ -214,24 +226,38 @@ describe('RxGeofire', () => {
   });
 
   describe('Custom Operators', () => {
-    let ref: GeoFireCollectionRef;
-    let center: GeoFirePoint;
-    beforeEach(() => {
-      ref = gfx.collection('bearings', ref => ref.limit(1));
-      center = gfx.point(40.5, -80.0);
-    });
-
-    test.skip('toGeoJSON should map a collection to GeoJSON', async done => {
-      const query = ref.within(center, 0.5, 'pos').pipe(toGeoJSON('pos'));
-      const val = await resolve(query);
+    test('toGeoJSON should map a collection to GeoJSON', async done => {
+      const val = (await get(of(mockResponse).pipe(toGeoJSON('point')))) as any;
       expect(val.type).toEqual('FeatureCollection');
+      done();
+    });
+  });
+
+  describe('Query Shape', () => {
+    let ref: GeoFireCollectionRef;
+    let center;
+    let data;
+    beforeAll(async () => {
+      ref = gfx.collection('bearings');
+      center = gfx.point(40.5, -80.0);
+      data = await get(ref.within(center, 5, 'pos'));
+    });
+    test('should have query metadata', async done => {
+      expect(data[0].queryMetadata.bearing).toBeDefined();
+      expect(data[0].queryMetadata.distance).toBeDefined();
+      done();
+    });
+    test('should be ordered by distance', async done => {
+      const first = data[0].queryMetadata.distance;
+      const last = data[data.length - 1].queryMetadata.distance;
+      expect(first).toBeCloseTo(0.2);
+      expect(last).toBeCloseTo(5);
+      expect(first).toBeLessThan(last);
       done();
     });
   });
 });
 
-// import { seed } from './seed';
-// seed();
 function sleep(delay) {
   const start = Date.now();
   while (Date.now() < start + delay);

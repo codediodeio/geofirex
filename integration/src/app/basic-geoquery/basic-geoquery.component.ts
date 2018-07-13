@@ -22,12 +22,8 @@ export class BasicGeoqueryComponent implements OnInit {
     const radius = 0.5;
     const field = 'pos';
 
-    // this.geo.collection('bearings').within(center, radius, field);
-
-    this.points = this.radius.pipe(
-      switchMap(r => {
-        return this.geo.collection('bearings').within(center, r, field);
-      })
+    const collection = this.geo.collection('users', ref =>
+      ref.where('status', '==', 'single').where('online', '==', true)
     );
   }
 

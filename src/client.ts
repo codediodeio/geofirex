@@ -1,7 +1,7 @@
 import { firestore } from './interfaces';
 
 import { GeoFireCollectionRef, QueryFn, get } from './collection';
-import { GeoFirePoint } from './geohash';
+import { GeoFirePoint } from './point';
 
 export class GeoFireClient {
   constructor(private app: firestore.FirebaseApp) {}

@@ -51,3 +51,10 @@
 //     }
 //   }
 // }
+
+// export async function seedOne(gfx: GeoFireClient) {
+//     const col = gfx.collection('compound');
+//     const point = gfx.point(38, -119);
+//     await col.setDoc(`foo${Date.now()}`, { point: point.data, color: 'blue' });
+//     console.log('foo');
+//   }

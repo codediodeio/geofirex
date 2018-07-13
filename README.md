@@ -11,6 +11,7 @@
 Realtime Geolocation with Firestore & RxJS
 
 :point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
+:tv: [Video Tutorial](https://angularfirebase.com/lessons/geolocation-query-in-firestore-realtime/)
 
 ## :checkered_flag: QuickStart
 
@@ -105,7 +106,7 @@ Write data just like you would in Firestore
 Or use one of the client's conveniece methods
 
 - `collection.setDoc(id, data)` - Set a document in the collection with an ID.
-- `collection.setPoint(lat, lng)` - Non-destructive update with a GeoFirePoint
+- `collection.setPoint(id, field, lat, lng)`- Add a geohash to an existing doc
 
 #### Read Data
 
@@ -144,7 +145,7 @@ A custom RxJS operator that transforms a collection into a [GeoJSON FeatureColle
 ```ts
 const query = geo.collection('cars').within(...)
 
-query.pipe( getGeoJSON() )
+query.pipe( toGeoJSON() )
 
 // Emits a single object typed as a FeatureCollection<Geometry>
 {
@@ -172,11 +173,13 @@ async function getCars {
 
 It's possibe to build Firestore collections with billions of documents. One of the main motivations of this project was to make geoqueries possible on a queried subset of data. You can make a regular Firestore query on collection by passing a callback as the second argument, then all geoqueries will scoped these contstraints.
 
+Note: This query requires a composite index, which you will be prompted to create with an error from Firestore on the first request.
+
 Example:
 
 ```ts
 const users = geo.collection('users', ref =>
-  ref.where('status', '==', 'online').limit(1000)
+  ref.where('status', '==', 'online')
 );
 
 const nearbyOnlineUsers = users.within(center, radius, field);
