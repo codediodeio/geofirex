@@ -38,6 +38,7 @@ describe('RxGeofire', () => {
     test('should initilize with accessors', () => {
       expect(point).toBeInstanceOf(GeoFirePoint);
       expect(point.geoPoint).toBeInstanceOf(firebase.firestore.GeoPoint);
+      expect(point.data.geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
     });
 
     test('should create a GeoHash', () => {

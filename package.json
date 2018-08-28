@@ -33,14 +33,12 @@
     "license": "ISC",
     "peerDependencies": {
         "rxjs": "^6.2.1",
-        "firebase": "5.2.0"
+        "firebase": "^5.2.0"
     },
     "devDependencies": {
-        "rxjs": "^6.2.1",
-        "rxjs-compat": "^6.2.1",
+        "@firebase/firestore-types": "^0.4.3",
         "@turf/bearing": "^6.0.1",
         "@turf/distance": "^6.0.1",
-        "@firebase/firestore-types": "^0.4.3",
         "@turf/turf": "^5.1.6",
         "@types/chance": "^1.0.1",
         "@types/faker": "^4.1.2",
@@ -51,7 +49,7 @@
         "@types/turf": "^3.5.32",
         "chance": "^1.0.16",
         "faker": "^4.1.0",
-        "firebase": "^5.2.0",
+        "firebase": "^5.4.1",
         "jest": "^23.3.0",
         "lodash": "^4.17.10",
         "rollup": "0.57.1",
@@ -61,6 +59,8 @@
         "rollup-plugin-sizes": "^0.4.2",
         "rollup-plugin-typescript2": "0.12.0",
         "rollup-plugin-uglify": "^3.0.0",
+        "rxjs": "^6.2.1",
+        "rxjs-compat": "^6.2.1",
         "ts-jest": "^23.0.0",
         "ts-loader": "3.5.0",
         "ts-node": "5.0.1",
