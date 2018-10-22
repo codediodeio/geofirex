@@ -65,7 +65,7 @@ describe('RxGeofire', () => {
   });
 
   describe('CollectionRef', () => {
-    let ref: GeoFireCollectionRef;
+    let ref: GeoFireCollectionRef<any>;
     let hash;
     let phx;
     beforeEach(() => {
