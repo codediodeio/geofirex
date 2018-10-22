@@ -69,7 +69,7 @@ describe('RxGeofire', () => {
     let hash;
     let phx;
     beforeEach(() => {
-      ref = gfx.collection('cities');
+      ref = gfx.collection<any>('cities');
       hash = gfx.point(33.45, -112.1);
       phx = { id: 'phoenix', name: 'Phoenix, AZ', position: hash.data };
     });
@@ -88,7 +88,7 @@ describe('RxGeofire', () => {
     });
 
     test('should filter docs with a query and be able to change its query', done => {
-      ref = gfx.collection('cities', ref =>
+      ref = gfx.collection<any>('cities', ref =>
         ref.where('name', '==', 'Austin, TX')
       );
 
@@ -158,12 +158,12 @@ describe('RxGeofire', () => {
     let ref: GeoFireCollectionRef;
     let center;
     beforeEach(() => {
-      ref = gfx.collection('bearings');
+      ref = gfx.collection<any>('bearings');
       center = gfx.point(40.5, -80.0);
     });
 
     test('work with compound Firestore queries', async done => {
-      const ref = gfx.collection('compound', ref =>
+      const ref = gfx.collection<any>('compound', ref =>
         ref.where('color', '==', 'blue')
       );
       const point = gfx.point(38, -119);
@@ -239,7 +239,7 @@ describe('RxGeofire', () => {
     let center;
     let data;
     beforeAll(async () => {
-      ref = gfx.collection('bearings');
+      ref = gfx.collection<any>('bearings');
       center = gfx.point(40.5, -80.0);
       data = await get(ref.within(center, 5, 'pos'));
     });
