@@ -19,11 +19,10 @@ export interface QueryMetadata {
 }
 
 export interface GeoQueryDocument {
-  [key: string]: any;
   queryMetadata: QueryMetadata;
 }
 
-export class GeoFireCollectionRef {
+export class GeoFireCollectionRef<T> {
   private ref: firestore.CollectionReference;
   private query: firestore.Query;
   private stream: Observable<firestore.QuerySnapshot>;
@@ -120,7 +119,7 @@ export class GeoFireCollectionRef {
     radius: number,
     field: string,
     opts = defaultOpts
-  ): Observable<GeoQueryDocument[]> {
+  ): Observable<(GeoQueryDocument & T)[]> {
     const precision = setPrecsion(radius);
     const centerHash = center.hash.substr(0, precision);
     const area = GeoFirePoint.neighbors(centerHash).concat(centerHash);
@@ -147,7 +146,7 @@ export class GeoFireCollectionRef {
               distance: center.distance(lat, lng),
               bearing: center.bearing(lat, lng)
             };
-            return { ...val, queryMetadata };
+            return { ...val, queryMetadata } as (GeoQueryDocument & T);
           })
 
           .sort((a, b) => a.queryMetadata.distance - b.queryMetadata.distance);
