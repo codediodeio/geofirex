@@ -26,7 +26,7 @@ describe('RxGeofire', () => {
 
   test('says hello', () => {
     expect(firebase.apps.length).toBe(1);
-    expect(gfx.app).toBe(firebase);
+    expect(gfx.getFirebaseApp()).toBe(firebase);
   });
 
   describe('GeoHash', () => {

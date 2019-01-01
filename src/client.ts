@@ -24,6 +24,13 @@ export class GeoFireClient {
   point(latitude: number, longitude: number): GeoFirePoint {
     return new GeoFirePoint(this.app, latitude, longitude);
   }
+  /**
+   * Returns the firebase instance used by the client
+   * @returns {firestore.FirebaseApp}
+   */
+  getFirebaseApp() {
+    return this.app;
+  }
 }
 /**
  * Initialize the library by passing it your Firebase app
