@@ -187,7 +187,7 @@ const nearbyOnlineUsers = users.within(center, radius, field);
 
 ### Usage with RxJS < 6.2, or Ionic v3
 
-This package requires RxJS 6.2, but you can still use it with older versions without blowing up you app by installing rxjs-compat.
+This package requires RxJS 6.2, but you can still use it with older versions without blowing up your app by installing rxjs-compat.
 
 Example:
 
