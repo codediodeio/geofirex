@@ -10,8 +10,9 @@ export type QueryFn = (ref: firestore.CollectionReference) => firestore.Query;
 
 export interface GeoQueryOptions {
   units: 'km';
+  supportNestedFields: false;
 }
-const defaultOpts: GeoQueryOptions = { units: 'km' };
+const defaultOpts: GeoQueryOptions = { units: 'km', supportNestedFields:false };
 
 export interface QueryMetadata {
   bearing: number;
@@ -124,6 +125,7 @@ export class GeoFireCollectionRef {
     const precision = setPrecsion(radius);
     const centerHash = center.hash.substr(0, precision);
     const area = GeoFirePoint.neighbors(centerHash).concat(centerHash);
+    const fields = opts.supportNestedFields ? field.split('.') : [field];
 
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
@@ -135,14 +137,20 @@ export class GeoFireCollectionRef {
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
         return reduced
           .filter(val => {
-            const lat = val[field].geopoint.latitude;
-            const lng = val[field].geopoint.longitude;
+            const obj = fields.reduce((acc, curr) => {
+                    return acc[curr];
+                  }, val);
+            const lat = obj.geopoint.latitude;
+            const lng = obj.geopoint.longitude;
             return center.distance(lat, lng) <= radius * 1.02; // buffer for edge distances;
           })
 
           .map(val => {
-            const lat = val[field].geopoint.latitude;
-            const lng = val[field].geopoint.longitude;
+            const obj = fields.reduce((acc, curr) => {
+              return acc[curr];
+            }, val);
+            const lat = obj.geopoint.latitude;
+            const lng = obj.geopoint.longitude;
             const queryMetadata = {
               distance: center.distance(lat, lng),
               bearing: center.bearing(lat, lng)
