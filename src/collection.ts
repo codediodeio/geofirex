@@ -78,6 +78,15 @@ export class GeoFireCollectionRef {
     return this.ref.doc(id).set(data);
   }
   /**
+   * Create or update a document in the collection based on the document ID merging fields
+   * @param  {string} id
+   * @param  {any} data
+   * @returns {Promise<void>}
+   */
+  setDocMerge(id: string, data: any) {
+    return this.ref.doc(id).set(data, { merge: true });
+  }
+  /**
    * Create or update a document with GeoFirePoint data
    * @param  {string} id document id
    * @param  {string} field name of point on the doc
