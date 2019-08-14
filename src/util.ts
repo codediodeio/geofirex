@@ -1,3 +1,9 @@
+import { Polygon, Point, Coord } from '@turf/helpers';
+import { GeoFirePoint } from './point';
+
+import centerOfMass from '@turf/center-of-mass';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+
 export function flip(arr) {
   return [arr[1], arr[0]];
 }
@@ -384,3 +390,37 @@ export const neighbors = function(hash_string) {
 
   return neighborHashList;
 };
+
+export const compute_geohash_tiles_from_polygon = function(polygon: Polygon): string[] {
+
+  const checked_geohashes = [];
+  const geohash_stack = [];
+  const geohashes = [];
+
+  // get center of polygon, assuming the earth is flat
+  const centerOfPoly: Point = centerOfMass(polygon);
+  const center_latitude = centerOfPoly.coordinates[0][1];
+  const center_longitude = centerOfPoly.coordinates[0][0];
+
+  const center_geohash = encode(center_latitude, center_longitude, 9);
+
+  geohashes.push(center_geohash);
+  geohash_stack.push(center_geohash);
+  checked_geohashes.push(center_geohash);
+
+  while (geohash_stack.length > 0) {
+    const current_geohash = geohash_stack.pop();
+    const area = neighbors(current_geohash);
+
+    area.map(neighbor => {
+      const point = decode(current_geohash) as unknown as Coord;
+      if (!checked_geohashes.indexOf(neighbor) && booleanPointInPolygon(point, polygon)) {
+        geohashes.push(neighbor);
+        geohash_stack.push(neighbor);
+        checked_geohashes.push(neighbor);
+      }
+    })
+  }
+
+  return geohashes
+}
