@@ -1,5 +1,4 @@
-import { Polygon, Point, Coord } from '@turf/helpers';
-import { GeoFirePoint } from './point';
+import { Polygon, Point, Coord, Feature } from '@turf/helpers';
 
 import centerOfMass from '@turf/center-of-mass';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
@@ -81,7 +80,7 @@ var SIGFIG_HASH_LENGTH = [0, 5, 7, 8, 11, 12, 13, 15, 16, 17, 18];
  * @param {Number} numberOfChars
  * @returns {String}
  */
-export const encode = function(latitude, longitude, numberOfChars) {
+export const encode = function (latitude, longitude, numberOfChars) {
   if (numberOfChars === ENCODE_AUTO) {
     if (typeof latitude === 'number' || typeof longitude === 'number') {
       throw new Error('string notation required for auto precision.');
@@ -146,7 +145,7 @@ export const encode = function(latitude, longitude, numberOfChars) {
  * @param {Number} bitDepth
  * @returns {Number}
  */
-export const encode_int = function(latitude, longitude, bitDepth) {
+export const encode_int = function (latitude, longitude, bitDepth) {
   bitDepth = bitDepth || 52;
 
   var bitsTotal = 0,
@@ -188,7 +187,7 @@ export const encode_int = function(latitude, longitude, bitDepth) {
  * @param {String} hash_string
  * @returns {Array}
  */
-export const decode_bbox = function(hash_string) {
+export const decode_bbox = function (hash_string) {
   var isLon = true,
     maxLat = 90,
     minLat = -90,
@@ -232,7 +231,7 @@ export const decode_bbox = function(hash_string) {
  * @param {Number} bitDepth
  * @returns {Array}
  */
-export const decode_bbox_int = function(hashInt, bitDepth) {
+export const decode_bbox_int = function (hashInt, bitDepth) {
   bitDepth = bitDepth || 52;
 
   var maxLat = 90,
@@ -275,7 +274,7 @@ function get_bit(bits, position) {
  * @param {String} hashString
  * @returns {Object}
  */
-export const decode = function(hashString) {
+export const decode = function (hashString) {
   var bbox = decode_bbox(hashString);
   var lat = (bbox[0] + bbox[2]) / 2;
   var lon = (bbox[1] + bbox[3]) / 2;
@@ -297,7 +296,7 @@ export const decode = function(hashString) {
  * @param {Number} bitDepth
  * @returns {Object}
  */
-export const decode_int = function(hash_int, bitDepth) {
+export const decode_int = function (hash_int, bitDepth) {
   var bbox = decode_bbox_int(hash_int, bitDepth);
   var lat = (bbox[0] + bbox[2]) / 2;
   var lon = (bbox[1] + bbox[3]) / 2;
@@ -322,7 +321,7 @@ export const decode_int = function(hash_int, bitDepth) {
  * @param {Array} Direction as a 2D normalized vector.
  * @returns {String}
  */
-export const neighbor = function(hashString, direction) {
+export const neighbor = function (hashString, direction) {
   var lonLat = decode(hashString);
   var neighborLat = lonLat.latitude + direction[0] * lonLat.error.latitude * 2;
   var neighborLon =
@@ -341,7 +340,7 @@ export const neighbor = function(hashString, direction) {
  * @param {String} hash_string
  * @returns {Array}
  */
-export const neighbor_int = function(hash_int, direction, bitDepth) {
+export const neighbor_int = function (hash_int, direction, bitDepth) {
   bitDepth = bitDepth || 52;
   var lonlat = decode_int(hash_int, bitDepth);
   var neighbor_lat = lonlat.latitude + direction[0] * lonlat.error.latitude * 2;
@@ -360,7 +359,7 @@ export const neighbor_int = function(hash_int, direction, bitDepth) {
  * @param {String} hash_string
  * @returns {encoded neighborHashList|Array}
  */
-export const neighbors = function(hash_string) {
+export const neighbors = function (hash_string) {
   var hashstringLength = hash_string.length;
 
   var lonlat = decode(hash_string);
@@ -391,32 +390,36 @@ export const neighbors = function(hash_string) {
   return neighborHashList;
 };
 
-export const compute_geohash_tiles_from_polygon = function(polygon: Polygon): string[] {
+export const compute_geohash_tiles_from_polygon = function (polygon: Polygon, precision: number): string[] {
 
   const checked_geohashes = [];
   const geohash_stack = [];
   const geohashes = [];
 
   // get center of polygon, assuming the earth is flat
-  const centerOfPoly: Point = centerOfMass(polygon);
-  const center_latitude = centerOfPoly.coordinates[0][1];
-  const center_longitude = centerOfPoly.coordinates[0][0];
+  const centerOfPoly: Feature<Point> = centerOfMass(polygon);
+  const center_latitude = centerOfPoly.geometry.coordinates[1];
+  const center_longitude = centerOfPoly.geometry.coordinates[0];
 
-  const center_geohash = encode(center_latitude, center_longitude, 9);
+  const center_geohash = encode(center_latitude, center_longitude, precision);
 
   geohashes.push(center_geohash);
   geohash_stack.push(center_geohash);
   checked_geohashes.push(center_geohash);
-
+  
   while (geohash_stack.length > 0) {
     const current_geohash = geohash_stack.pop();
     const area = neighbors(current_geohash);
 
-    area.map(neighbor => {
-      const point = decode(current_geohash) as unknown as Coord;
-      if (!checked_geohashes.indexOf(neighbor) && booleanPointInPolygon(point, polygon)) {
+    area.forEach(neighbor => {
+      const lonlat = decode(current_geohash);
+      const lat = lonlat.latitude;
+      const lon = lonlat.longitude;
+      const point: Coord = [lon, lat];
+
+      if (checked_geohashes.indexOf(neighbor) === -1 && booleanPointInPolygon(point, polygon)) {
         geohashes.push(neighbor);
-        geohash_stack.push(neighbor);
+        if (geohash_stack.indexOf(neighbor) === -1) geohash_stack.push(neighbor);
         checked_geohashes.push(neighbor);
       }
     })

@@ -1,7 +1,7 @@
 import { firestore } from './interfaces';
 
 import { Observable, combineLatest } from 'rxjs';
-import { shareReplay, map, first } from 'rxjs/operators';
+import { shareReplay, map, first, tap } from 'rxjs/operators';
 import { GeoFirePoint, Latitude, Longitude } from './point';
 import { setPrecsion, compute_geohash_tiles_from_polygon } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
@@ -160,6 +160,33 @@ export class GeoFireCollectionRef {
     return combo;
   }
 
+  /**
+   * Queries the Firestore collection based on geograpic radius
+   * @param  {Polygon} polygon the polygon to be searched in.
+   * @param  {string} field the document field that contains the GeoFirePoint data
+   * @param  {GeoQueryOptions} opts=defaultOpts
+   * @returns {Observable<GeoQueryDocument>} points that within in the polygon
+   */
+  withinPolygon(polygon: Polygon, field: string): Observable<GeoQueryDocument[]> {
+    const area = compute_geohash_tiles_from_polygon(polygon);
+    console.log('area.length', area.length);
+    const queries = area.map(hash => {
+      const query = this.queryPoint(hash, field);
+      return createStream(query).pipe(snapToData());
+    });
+
+    const combo = combineLatest(...queries).pipe(
+      map(arr => {
+        const reduced = arr.reduce((acc, cur) => acc.concat(cur));
+        return reduced
+      }),
+      // tap(console.log),
+      shareReplay(1)
+    );
+
+    return combo;
+  }
+
   first() { }
 
   private queryPoint(geohash: string, field: string) {
@@ -170,27 +197,7 @@ export class GeoFireCollectionRef {
       .endAt(end);
   }
 
-  /**
-   * Queries the Firestore collection based on geograpic radius
-   * @param  {Polygon} polygon the polygon to be searched in.
-   * @param  {string} field the document field that contains the GeoFirePoint data
-   * @param  {GeoQueryOptions} opts=defaultOpts
-   * @returns {Observable<GeoQueryDocument>} points that within in the polygon
-   */
-  withinPolygon(polygon: Polygon, field: string): Observable<GeoQueryDocument[]> {
-    const area = compute_geohash_tiles_from_polygon(polygon);
 
-    const queries = area.map(hash => {
-      const query = this.queryPoint(hash, field);
-      return createStream(query).pipe(snapToData());
-    });
-
-    const combo = combineLatest(...queries).pipe(
-      shareReplay(1)
-    );
-
-    return combo;
-  }
   // withinBbox(field: string, bbox: number, opts = defaultOpts) {
   //   return 'not implemented';
   // }
