@@ -168,7 +168,7 @@ export class GeoFireCollectionRef {
    * @returns {Observable<GeoQueryDocument>} points that within in the polygon
    */
   withinPolygon(polygon: Polygon, field: string): Observable<GeoQueryDocument[]> {
-    const area = compute_geohash_tiles_from_polygon(polygon);
+    const area = compute_geohash_tiles_from_polygon(polygon, 6);
     console.log('area.length', area.length);
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
