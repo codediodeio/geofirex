@@ -6,7 +6,8 @@ import { GeoFirePoint, Latitude, Longitude } from './point';
 import { setPrecsion, compute_geohash_tiles_from_polygon } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
 
-import { Polygon } from '@turf/helpers';
+import { Polygon, BBox } from '@turf/helpers';
+import { bboxes } from 'ngeohash';
 
 export type QueryFn = (ref: firestore.CollectionReference) => firestore.Query;
 
@@ -161,15 +162,43 @@ export class GeoFireCollectionRef {
   }
 
   /**
-   * Queries the Firestore collection based on geograpic radius
+   * Queries the Firestore collection based on geograpic polygon
    * @param  {Polygon} polygon the polygon to be searched in.
    * @param  {string} field the document field that contains the GeoFirePoint data
-   * @param  {GeoQueryOptions} opts=defaultOpts
    * @returns {Observable<GeoQueryDocument>} points that within in the polygon
    */
-  withinPolygon(polygon: Polygon, field: string): Observable<GeoQueryDocument[]> {
-    const area = compute_geohash_tiles_from_polygon(polygon, 6);
+  withinPolygon(polygon: Polygon, precision: number, field: string): Observable<GeoQueryDocument[]> {
+    precision = precision || 6;
+    const area = compute_geohash_tiles_from_polygon(polygon, precision);
     console.log('area.length', area.length);
+    const queries = area.map(hash => {
+      const query = this.queryPoint(hash, field);
+      return createStream(query).pipe(snapToData());
+    });
+
+    const combo = combineLatest(...queries).pipe(
+      map(arr => {
+        const reduced = arr.reduce((acc, cur) => acc.concat(cur));
+        return reduced
+      }),
+      // tap(console.log),
+      shareReplay(1)
+    );
+
+    return combo;
+  }
+
+  /**
+   * Queries the Firestore collection based on geograpic bbox
+   * @param  {Bbox} bbox the bbox to be searched in.
+   * @param  {string} field the document field that contains the GeoFirePoint data
+   * @returns {Observable<GeoQueryDocument>} points that within in the bbox
+   */
+  withinBbox(bbox: BBox, precision: number, field: string, opts = defaultOpts) {
+    const [minlat, minlon, maxlat, maxlon] = bbox;
+    const area = bboxes(minlat, minlon, maxlat, maxlon, setPrecsion(precision));
+    console.log({area});
+    
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
       return createStream(query).pipe(snapToData());
@@ -193,14 +222,11 @@ export class GeoFireCollectionRef {
     const end = geohash + '~';
     return this.query
       .orderBy(`${field}.geohash`)
+      .orderBy('AGL', 'desc')
       .startAt(geohash)
-      .endAt(end);
+      .endAt(end)
+      .limit(1);
   }
-
-
-  // withinBbox(field: string, bbox: number, opts = defaultOpts) {
-  //   return 'not implemented';
-  // }
 
   // findNearest(field: string, radius: number, opts = defaultOpts) {
   //   return 'not implemented';

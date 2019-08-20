@@ -390,6 +390,87 @@ export const neighbors = function (hash_string) {
   return neighborHashList;
 };
 
+/**
+ * Bounding Boxes
+ *
+ * Return all the hashString between minLat, minLon, maxLat, maxLon in numberOfChars
+ * @param {Number} minLat
+ * @param {Number} minLon
+ * @param {Number} maxLat
+ * @param {Number} maxLon
+ * @param {Number} numberOfChars
+ * @returns {bboxes.hashList|Array}
+ */
+export const bboxes = function (minLat, minLon, maxLat, maxLon, numberOfChars) {
+  if (numberOfChars <= 0) {
+    throw new Error("numberOfChars must be strictly positive");
+  }
+  numberOfChars = numberOfChars || 9;
+
+  var hashSouthWest = encode(minLat, minLon, numberOfChars);
+  var hashNorthEast = encode(maxLat, maxLon, numberOfChars);
+
+  var latLon = decode(hashSouthWest);
+
+  var perLat = latLon.error.latitude * 2;
+  var perLon = latLon.error.longitude * 2;
+
+  var boxSouthWest = decode_bbox(hashSouthWest);
+  var boxNorthEast = decode_bbox(hashNorthEast);
+
+  var latStep = Math.round((boxNorthEast[0] - boxSouthWest[0]) / perLat);
+  var lonStep = Math.round((boxNorthEast[1] - boxSouthWest[1]) / perLon);
+
+  var hashList = [];
+
+  for (var lat = 0; lat <= latStep; lat++) {
+    for (var lon = 0; lon <= lonStep; lon++) {
+      hashList.push(neighbor(hashSouthWest, [lat, lon]));
+    }
+  }
+
+  return hashList;
+};
+
+/**
+ * Bounding Boxes Integer
+ *
+ * Return all the hash integers between minLat, minLon, maxLat, maxLon in bitDepth
+ * @param {Number} minLat
+ * @param {Number} minLon
+ * @param {Number} maxLat
+ * @param {Number} maxLon
+ * @param {Number} bitDepth
+ * @returns {bboxes_int.hashList|Array}
+ */
+export const bboxes_int = function(minLat, minLon, maxLat, maxLon, bitDepth){
+    bitDepth = bitDepth || 52;
+
+    var hashSouthWest = encode_int(minLat, minLon, bitDepth);
+    var hashNorthEast = encode_int(maxLat, maxLon, bitDepth);
+
+    var latlon = decode_int(hashSouthWest, bitDepth);
+
+    var perLat = latlon.error.latitude * 2;
+    var perLon = latlon.error.longitude * 2;
+
+    var boxSouthWest = decode_bbox_int(hashSouthWest, bitDepth);
+    var boxNorthEast = decode_bbox_int(hashNorthEast, bitDepth);
+
+    var latStep = Math.round((boxNorthEast[0] - boxSouthWest[0])/perLat);
+    var lonStep = Math.round((boxNorthEast[1] - boxSouthWest[1])/perLon);
+
+    var hashList = [];
+
+    for(var lat = 0; lat <= latStep; lat++){
+        for(var lon = 0; lon <= lonStep; lon++){
+            hashList.push(neighbor_int(hashSouthWest,[lat, lon], bitDepth));
+        }
+    }
+
+  return hashList;
+};
+
 export const compute_geohash_tiles_from_polygon = function (polygon: Polygon, precision: number): string[] {
 
   const checked_geohashes = [];
