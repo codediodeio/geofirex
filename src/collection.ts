@@ -13,6 +13,11 @@ export interface GeoQueryOptions {
 }
 const defaultOpts: GeoQueryOptions = { units: 'km' };
 
+export interface SetOptions {
+  merge?: boolean;
+  mergeFields?: (string | FieldPath)[];
+}
+
 export interface QueryMetadata {
   bearing: number;
   distance: number;
@@ -72,10 +77,11 @@ export class GeoFireCollectionRef {
    * Create or update a document in the collection based on the document ID
    * @param  {string} id
    * @param  {any} data
+   * @param  {SetOptions} options
    * @returns {Promise<void>}
    */
-  setDoc(id: string, data: any) {
-    return this.ref.doc(id).set(data);
+  setDoc(id: string, data: any, options?: SetOptions) {
+    return this.ref.doc(id).set(data, options);
   }
   /**
    * Create or update a document with GeoFirePoint data
