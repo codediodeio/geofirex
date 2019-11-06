@@ -31,5 +31,9 @@ export class GeoFireClient {
  * @returns GeoFireClient
  */
 export function init(app: firestore.FirebaseApp): GeoFireClient {
+  // Bug Fix for #13 Geopoint was moved from app.firestore to app._firebase_.firestore.GeoPoint?
+  if (typeof(app.firestore.GeoPoint) === 'undefined' && app.firebase_ && app.firebase_.firestore && app.firebase_.firestore.GeoPoint) {
+    app.firestore.GeoPoint = app.firebase_.firestore.GeoPoint;
+  }
   return new GeoFireClient(app);
 }
