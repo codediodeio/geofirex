@@ -25,6 +25,7 @@
     "angularfire2": "^5.0.0-rc.11",
     "core-js": "^2.5.4",
     "firebase": "^5.2.0",
+    "firebase-admin": "^8.7.0",
     "geofirex": "0.0.3",
     "rxjs": "^6.0.0",
     "snazzy-info-window": "^1.1.1",

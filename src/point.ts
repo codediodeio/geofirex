@@ -1,4 +1,4 @@
-import { firestore, Point, Feature } from './interfaces';
+import { Point, Feature, FirebaseSDK } from './interfaces';
 
 import { neighbors, encode, flip } from './util';
 
@@ -9,9 +9,11 @@ export type Latitude = number;
 export type Longitude = number;
 export type Coordinates = [Latitude, Longitude];
 
+import * as fb from 'firebase';
+
 export class GeoFirePoint {
   constructor(
-    public app: firestore.FirebaseApp,
+    public app: FirebaseSDK,
     public latitude: number,
     public longitude: number
   ) {}
@@ -67,7 +69,7 @@ export class GeoFirePoint {
     return new (this.app as any).firestore.GeoPoint(
       this.latitude,
       this.longitude
-    ) as firestore.GeoPoint;
+    ) as fb.firestore.GeoPoint;
   }
 
   /**

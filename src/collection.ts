@@ -1,4 +1,4 @@
-import { firestore } from './interfaces';
+// import { firestore } from './interfaces';
 
 import { Observable, combineLatest } from 'rxjs';
 import { shareReplay, map, first } from 'rxjs/operators';
@@ -6,7 +6,10 @@ import { GeoFirePoint, Latitude, Longitude } from './point';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
 
-export type QueryFn = (ref: firestore.CollectionReference) => firestore.Query;
+import * as fb from 'firebase';
+import { FirebaseSDK } from './interfaces';
+
+export type QueryFn = (ref: fb.firestore.CollectionReference) => fb.firestore.Query;
 
 export interface GeoQueryOptions {
   units: 'km';
@@ -15,7 +18,7 @@ const defaultOpts: GeoQueryOptions = { units: 'km' };
 
 export interface SetOptions {
   merge?: boolean;
-  mergeFields?: (string | FieldPath)[];
+  mergeFields?: (string | fb.firestore.FieldPath)[];
 }
 
 export interface QueryMetadata {
@@ -28,12 +31,12 @@ export interface GeoQueryDocument {
 }
 
 export class GeoFireCollectionRef<T> {
-  private ref: firestore.CollectionReference;
-  private query: firestore.Query;
-  private stream: Observable<firestore.QuerySnapshot>;
+  private ref: fb.firestore.CollectionReference;
+  private query: fb.firestore.Query;
+  private stream: Observable<fb.firestore.QuerySnapshot>;
 
   constructor(
-    private app: firestore.FirebaseApp,
+    private app: FirebaseSDK,
     private path: string,
     query?: QueryFn
   ) {
@@ -61,7 +64,7 @@ export class GeoFireCollectionRef<T> {
    * @param  {any} data
    * @returns {Promise<firestore.DocumentReference>}
    */
-  add(data: any): Promise<firestore.DocumentReference> {
+  add(data: any): Promise<fb.firestore.DocumentReference> {
     return this.ref.add(data);
   }
   /**
@@ -82,15 +85,7 @@ export class GeoFireCollectionRef<T> {
   setDoc(id: string, data: any, options?: SetOptions) {
     return this.ref.doc(id).set(data, options);
   }
-  /**
-   * Create or update a document in the collection based on the document ID merging fields
-   * @param  {string} id
-   * @param  {any} data
-   * @returns {Promise<void>}
-   */
-  setDocMerge(id: string, data: any) {
-    return this.ref.doc(id).set(data, { merge: true });
-  }
+
   /**
    * Create or update a document with GeoFirePoint data
    * @param  {string} id document id
@@ -198,8 +193,8 @@ export class GeoFireCollectionRef<T> {
 }
 
 function snapToData(id = 'id') {
-  return map((foo: firestore.QuerySnapshot) =>
-    foo.docs.map(v => {
+  return map((querySnapshot: fb.firestore.QuerySnapshot) =>
+    querySnapshot.docs.map(v => {
       return {
         ...(id ? { [id]: v.id } : null),
         ...v.data()

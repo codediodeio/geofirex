@@ -18,15 +18,15 @@ describe('RxGeofire', () => {
   beforeAll(() => {
     firebase.initializeApp(config);
     const firestore = firebase.firestore();
-    const settings = { timestampsInSnapshots: true };
-    firestore.settings(settings);
+    // const settings = { timestampsInSnapshots: true };
+    // firestore.settings(settings);
 
-    gfx = new GeoFireClient(firebase);
+    gfx = new GeoFireClient( firebase );
   });
 
   test('says hello', () => {
     expect(firebase.apps.length).toBe(1);
-    expect(gfx.app).toBe(firebase);
+    expect(gfx.app).toBe( firebase );
   });
 
   describe('GeoHash', () => {
@@ -155,7 +155,7 @@ describe('RxGeofire', () => {
   });
 
   describe('within(...) queries', () => {
-    let ref: GeoFireCollectionRef;
+    let ref: GeoFireCollectionRef<any>;
     let center;
     beforeEach(() => {
       ref = gfx.collection<any>('bearings');
@@ -235,7 +235,7 @@ describe('RxGeofire', () => {
   });
 
   describe('Query Shape', () => {
-    let ref: GeoFireCollectionRef;
+    let ref: GeoFireCollectionRef<any>;
     let center;
     let data;
     beforeAll(async () => {
