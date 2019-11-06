@@ -12,7 +12,7 @@ export class GeoFireClient {
    * @param  {QueryFn} query? Firestore query id ref => ref.orderBy('foo').limit(5)
    * @returns {GeoFireCollectionRef}
    */
-  collection(path: string, query?: QueryFn): GeoFireCollectionRef {
+  collection<T>(path: string, query?: QueryFn): GeoFireCollectionRef<T> {
     return new GeoFireCollectionRef(this.app, path, query);
   }
   /**
