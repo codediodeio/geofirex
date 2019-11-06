@@ -49,7 +49,7 @@ export class GeoFireCollectionRef<T> {
     return this.stream;
   }
   /**
-   * Return the collection mapped to data payload with with ID
+   * Return the collection mapped to data payload with ID
    * @param {string} id='id'
    * @returns {Observable<any[]>}
    */
