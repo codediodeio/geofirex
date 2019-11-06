@@ -6,6 +6,8 @@ import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json'
 // import uglify from 'rollup-plugin-uglify';
 
+import bundleSize from 'rollup-plugin-bundle-size';
+
 const globals = {
     rxjs: 'rxjs',
     'rxjs/operators': 'rxjs.operators',
@@ -36,5 +38,6 @@ export default {
         }),
         cjs(),
         // sizes()
+        bundleSize()
     ]
 };

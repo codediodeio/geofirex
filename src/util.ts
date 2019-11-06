@@ -1,3 +1,18 @@
+import { Point, Feature, FirebaseSDK, Coordinates } from './interfaces';
+
+export function toGeoJSONFeature(coordinates: Coordinates, props?: any): Feature<Point> {
+  coordinates = flip(coordinates) as Coordinates;
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates
+    },
+    properties: props
+  };
+}
+
+
 export function flip(arr) {
   return [arr[1], arr[0]];
 }

@@ -37,17 +37,17 @@ describe('RxGeofire', () => {
 
     test('should initilize with accessors', () => {
       expect(point).toBeInstanceOf(GeoFirePoint);
-      expect(point.geoPoint).toBeInstanceOf(firebase.firestore.GeoPoint);
-      expect(point.data.geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
+      expect(point.geoPoint()).toBeInstanceOf(firebase.firestore.GeoPoint);
+      expect(point.data().geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
     });
 
     test('should create a GeoHash', () => {
-      expect(point.hash.length).toBe(9);
+      expect(point.hash().length).toBe(9);
     });
 
     test('should return its neighbors', () => {
-      expect(point.neighbors).toBeInstanceOf(Array);
-      expect(point.neighbors.length).toBe(8);
+      expect(point.neighbors()).toBeInstanceOf(Array);
+      expect(point.neighbors().length).toBe(8);
     });
 
     test('should calculate distance', () => {
@@ -65,13 +65,13 @@ describe('RxGeofire', () => {
   });
 
   describe('CollectionRef', () => {
-    let ref: GeoFireCollectionRef<any>;
+    let ref: GeoFireCollectionRef;
     let hash;
     let phx;
     beforeEach(() => {
-      ref = gfx.collection<any>('cities');
+      ref = gfx.collection('cities');
       hash = gfx.point(33.45, -112.1);
-      phx = { id: 'phoenix', name: 'Phoenix, AZ', position: hash.data };
+      phx = { id: 'phoenix', name: 'Phoenix, AZ', position: hash.data() };
     });
 
     test('should return an Observable', done => {
@@ -88,7 +88,7 @@ describe('RxGeofire', () => {
     });
 
     test('should filter docs with a query and be able to change its query', done => {
-      ref = gfx.collection<any>('cities', ref =>
+      ref = gfx.collection('cities', ref =>
         ref.where('name', '==', 'Austin, TX')
       );
 
@@ -155,15 +155,15 @@ describe('RxGeofire', () => {
   });
 
   describe('within(...) queries', () => {
-    let ref: GeoFireCollectionRef<any>;
+    let ref: GeoFireCollectionRef;
     let center;
     beforeEach(() => {
-      ref = gfx.collection<any>('bearings');
+      ref = gfx.collection('bearings');
       center = gfx.point(40.5, -80.0);
     });
 
     test('work with compound Firestore queries', async done => {
-      const ref = gfx.collection<any>('compound', ref =>
+      const ref = gfx.collection('compound', ref =>
         ref.where('color', '==', 'blue')
       );
       const point = gfx.point(38, -119);
@@ -213,7 +213,7 @@ describe('RxGeofire', () => {
       query.pipe(take(3)).subscribe(val => {
         if (i === 1) {
           expect(val.length).toBe(4);
-          ref.setDoc('testPoint', { pos: gfx.point(40.49999, -80).data });
+          ref.setDoc('testPoint', { pos: gfx.point(40.49999, -80).data() });
           i++;
         } else if (i === 2) {
           expect(val.length).toBe(5);
@@ -239,7 +239,7 @@ describe('RxGeofire', () => {
     let center;
     let data;
     beforeAll(async () => {
-      ref = gfx.collection<any>('bearings');
+      ref = gfx.collection('bearings');
       center = gfx.point(40.5, -80.0);
       data = await get(ref.within(center, 5, 'pos'));
     });

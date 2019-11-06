@@ -8,7 +8,7 @@
 
 # GeoFireX
 
-Realtime Geolocation with Firestore & RxJS
+Realtime Geolocation with Firestore & RxJS. Runs on the Web and Node.js. 
 
 :point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
 :tv: [Video Tutorial](https://angularfirebase.com/lessons/geolocation-query-in-firestore-realtime/)
@@ -26,13 +26,34 @@ npm install rxjs firebase
 
 The library is a lightweight client for the Firebase Web SDK that provides tools for wrangling geolocation data in Firestore. You need a [Firebase project](https://firebase.google.com/docs/storage/web/start) to get started.
 
-```ts
+Web:
+
+```js
 // Init Firebase
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 firebase.initializeApp(yourConfig);
 
 // Init GeoFireX
-import * as geofirex from 'geofirex';
+import geofirex from 'geofirex';
+const geo = geofirex.init(firebase);
+```
+
+Node.js with the Firebase Admin SDK:
+
+```js
+const admin = require('firebase-admin');
+const geo = require('geofirex').init(admin);
+```
+
+With Typescript:
+
+```ts
+// Init Firebase
+import * as firebase from 'firebase/app'; 
+firebase.initializeApp(yourConfig);
+
+// Init GeoFireX
+import * as geofirex from 'geofirex'; 
 const geo = geofirex.init(firebase);
 ```
 
@@ -45,10 +66,10 @@ const cities = geo.collection('cities');
 
 const point = geo.point(40, -119);
 
-cities.add({ name: 'Phoenix', position: point.data });
+cities.add({ name: 'Phoenix', position: point.data() });
 ```
 
-Calling `point.data` returns an object that contains a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). It should look like this in your database. You can name the object whatever you want and even save multiple points on a single document.
+Calling `point.data()` returns an object that contains a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). It should look like this in your database. You can name the object whatever you want and even save multiple points on a single document.
 
 ![](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/point1.png?alt=media&token=0c833700-3dbd-476a-99a9-41c1143dbe97)
 
@@ -123,11 +144,11 @@ Example: `const point = geo.point(38, -119)`
 
 #### Getters
 
-- `point.hash` Returns a geohash string at precision 9
-- `point.geoPoint` Returns a Firestore GeoPoint
-- `point.geoJSON` Returns data as a GeoJSON `Feature<Point>`
-- `point.coords` Returns coordinates as `[latitude, longitude]`
-- `point.data` Returns data object suitable for saving to the Firestore database
+- `point.hash()` Returns a geohash string at precision 9
+- `point.geoPoint()` Returns a Firestore GeoPoint
+- `point.geoJSON()` Returns data as a GeoJSON `Feature<Point>`
+- `point.coords()` Returns coordinates as `[latitude, longitude]`
+- `point.data()` Returns data object suitable for saving to the Firestore database
 
 #### Geo Calculations
 
@@ -205,7 +226,7 @@ const point = geo.point(40, -50);
 ref.add({ location: point });
 
 // This is GOOD
-ref.add({ location: point.data });
+ref.add({ location: point.data() });
 ```
 
 ### Make Dynamic Queries the RxJS Way

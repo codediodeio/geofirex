@@ -31,7 +31,7 @@
     "author": "Jeff Delaney",
     "license": "ISC",
     "peerDependencies": {
-        "rxjs": "^6.2.1",
+        "rxjs": "^6.0.0",
         "firebase": "^5.2.0"
     },
     "devDependencies": {
@@ -51,6 +51,7 @@
         "lodash": "^4.17.10",
         "rollup": "^1.26.3",
         "rollup-plugin-analyzer": "^2.0.4",
+        "rollup-plugin-bundle-size": "^1.0.3",
         "rollup-plugin-commonjs": "9.1.0",
         "rollup-plugin-node-resolve": "3.3.0",
         "rollup-plugin-sizes": "^0.4.2",

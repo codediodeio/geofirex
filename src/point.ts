@@ -1,13 +1,10 @@
-import { Point, Feature, FirebaseSDK } from './interfaces';
+import { Point, Feature, FirebaseSDK, Coordinates } from './interfaces';
 
-import { neighbors, encode, flip } from './util';
+import { neighbors, encode, toGeoJSONFeature } from './util';
 
 import distance from '@turf/distance';
 import bearing from '@turf/bearing';
 
-export type Latitude = number;
-export type Longitude = number;
-export type Coordinates = [Latitude, Longitude];
 
 import * as fb from 'firebase';
 
@@ -18,54 +15,44 @@ export class GeoFirePoint {
     public longitude: number
   ) {}
 
-  static neighbors(str: string) {
-    return neighbors(str);
-  }
+  // static neighbors(str: string) {
+  //   return neighbors(str);
+  // }
 
-  static distance(to: Coordinates, from: Coordinates) {
-    return distance(GeoFirePoint.geoJSON(to), GeoFirePoint.geoJSON(from));
-  }
+  // static distance(to: Coordinates, from: Coordinates) {
+  //   return distance(toGeoJSONFeature(to), toGeoJSONFeature(from));
+  // }
 
-  static bearing(start: Coordinates, end: Coordinates) {
-    return bearing(GeoFirePoint.geoJSON(start), GeoFirePoint.geoJSON(end));
-  }
+  // static bearing(start: Coordinates, end: Coordinates) {
+  //   return bearing(toGeoJSONFeature(start), toGeoJSONFeature(end));
+  // }
 
-  static geoJSON(coordinates: Coordinates, props?: any): Feature<Point> {
-    coordinates = flip(coordinates) as Coordinates;
-    return {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates
-      },
-      properties: props
-    };
-  }
+
   /**
    * @returns {string} geohash of length 9
    */
-  get hash() {
+  hash() {
     return encode(this.latitude, this.longitude, 9);
   }
 
   /**
    * @returns {string[]} an array of the 8 neigbors of this point's geohash
    */
-  get neighbors(): string[] {
-    return GeoFirePoint.neighbors(this.hash);
+  neighbors(): string[] {
+    return neighbors(this.hash());
   }
 
   /**
    * @returns {geojson.Feature<geojson.Point>} GeoJSON representation of the point
    */
-  get geoJSON(): Feature<Point> {
-    return GeoFirePoint.geoJSON(this.coords);
+  geoJSON(): Feature<Point> {
+    return toGeoJSONFeature(this.coords());
   }
 
   /**
    * @returns {firestore.GeoPoint} Firestore GeoPoint representation of the point
    */
-  get geoPoint() {
+  geoPoint() {
     return new (this.app as any).firestore.GeoPoint(
       this.latitude,
       this.longitude
@@ -75,17 +62,17 @@ export class GeoFirePoint {
   /**
    * @returns {[Latitude, Longitude]}
    */
-  get coords(): Coordinates {
+  coords(): Coordinates {
     return [this.latitude, this.longitude];
   }
 
   /**
    * @returns { {geopoint: firestore.GeoPoint, geohash: string} } recommended data format for database
    */
-  get data() {
+  data() {
     return {
-      geopoint: this.geoPoint,
-      geohash: this.hash
+      geopoint: this.geoPoint(),
+      geohash: this.hash()
     };
   }
 
@@ -95,7 +82,7 @@ export class GeoFirePoint {
    * @returns {number} Haversine distance to another set of coords
    */
   distance(latitude: number, longitude: number) {
-    return GeoFirePoint.distance(this.coords, [latitude, longitude]);
+    return distance(toGeoJSONFeature(this.coords()), toGeoJSONFeature([latitude, longitude]));
   }
 
   /**
@@ -104,6 +91,6 @@ export class GeoFirePoint {
    * @returns {number} Haversine bearing to another set of coords
    */
   bearing(latitude: number, longitude: number) {
-    return GeoFirePoint.bearing(this.coords, [latitude, longitude]);
+    return bearing(toGeoJSONFeature(this.coords()), toGeoJSONFeature([latitude, longitude]));
   }
 }

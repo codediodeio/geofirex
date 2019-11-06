@@ -16,5 +16,5 @@
     "types": ["jest", "node"]
   },
   "include": ["src"],
-  "exclude": ["dist/**/*", "spec/**/*"]
+  "exclude": ["dist/**/*", "spec/**/*", "integration/**/*", "example/**/*"]
 }

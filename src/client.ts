@@ -3,9 +3,6 @@ import { FirebaseSDK } from './interfaces';
 import { GeoFireCollectionRef, QueryFn, get } from './collection';
 import { GeoFirePoint } from './point';
 
-
-
-
 export class GeoFireClient {
   constructor(public app: FirebaseSDK) {}
   /**

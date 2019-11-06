@@ -2,24 +2,20 @@
 
 import { Observable, combineLatest } from 'rxjs';
 import { shareReplay, map, first } from 'rxjs/operators';
-import { GeoFirePoint, Latitude, Longitude } from './point';
+import { GeoFirePoint } from './point';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
+import { neighbors, toGeoJSONFeature } from './util';
 
-import * as fb from 'firebase';
+import * as fb from 'firebase/app';
 import { FirebaseSDK } from './interfaces';
 
 export type QueryFn = (ref: fb.firestore.CollectionReference) => fb.firestore.Query;
 
 export interface GeoQueryOptions {
-  units: 'km';
+  units: 'km'
 }
 const defaultOpts: GeoQueryOptions = { units: 'km' };
-
-export interface SetOptions {
-  merge?: boolean;
-  mergeFields?: (string | fb.firestore.FieldPath)[];
-}
 
 export interface QueryMetadata {
   bearing: number;
@@ -30,7 +26,7 @@ export interface GeoQueryDocument {
   queryMetadata: QueryMetadata;
 }
 
-export class GeoFireCollectionRef<T> {
+export class GeoFireCollectionRef<T = any> {
   private ref: fb.firestore.CollectionReference;
   private query: fb.firestore.Query;
   private stream: Observable<fb.firestore.QuerySnapshot>;
@@ -82,7 +78,7 @@ export class GeoFireCollectionRef<T> {
    * @param  {SetOptions} options
    * @returns {Promise<void>}
    */
-  setDoc(id: string, data: any, options?: SetOptions) {
+  setDoc(id: string, data: any, options?: fb.firestore.SetOptions) {
     return this.ref.doc(id).set(data, options);
   }
 
@@ -97,10 +93,10 @@ export class GeoFireCollectionRef<T> {
   setPoint(
     id: string,
     field: string,
-    latitude: Latitude,
-    longitude: Longitude
+    latitude: number,
+    longitude: number
   ) {
-    const point = new GeoFirePoint(this.app, latitude, longitude).data;
+    const point = new GeoFirePoint(this.app, latitude, longitude).data();
     return this.ref.doc(id).set({ [field]: point }, { merge: true });
   }
 
@@ -132,8 +128,8 @@ export class GeoFireCollectionRef<T> {
   ): Observable<(GeoQueryDocument & T)[]> {
     const precision = setPrecsion(radius);
     const radiusBuffer = radius * 1.02; // buffer for edge distances
-    const centerHash = center.hash.substr(0, precision);
-    const area = GeoFirePoint.neighbors(centerHash).concat(centerHash);
+    const centerHash = center.hash().substr(0, precision);
+    const area = neighbors(centerHash).concat(centerHash);
 
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
@@ -167,8 +163,6 @@ export class GeoFireCollectionRef<T> {
 
     return combo;
   }
-
-  first() {}
 
   private queryPoint(geohash: string, field: string) {
     const end = geohash + '~';
@@ -208,7 +202,7 @@ internal, do not use
  */
 function createStream(input): Observable<any> {
   return new Observable(observer => {
-    const unsubscribe = input.onSnapshot(observer);
+    const unsubscribe = input.onSnapshot((val) => observer.next(val), err => observer.error(err));
     return { unsubscribe };
   });
 }
@@ -222,7 +216,7 @@ export function toGeoJSON(field: string, includeProps: boolean = false) {
     return {
       type: 'FeatureCollection',
       features: data.map(v =>
-        GeoFirePoint.geoJSON(
+        toGeoJSONFeature(
           [v[field].geopoint.latitude, v[field].geopoint.longitude],
           includeProps ? { ...v } : {}
         )

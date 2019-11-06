@@ -3,29 +3,46 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const geofirex = require('geofirex');
-const geo = geofirex.init(firebase);
+const geo = geofirex.init(admin);
 
 console.log(geo)
 
-exports.dbWrite = functions.firestore
-    .document('/positions/{docId}')
-    .onCreate((change, context) => {
-        const docId = context.params.docId;
+const rx = require('rxjs');
 
-        if (!docId.includes('testPoint')) return;
+exports.testFun = functions.https.onRequest((req, res) => {
+    console.log(geo.point(38.5, -119.5))
 
-        return delay(15000).then(() => {
-            return admin
-                .firestore()
-                .doc('positions/' + docId)
-                .delete();
-        });
+    const ref = geo.collection('bearings')
+    const point = geo.point(40.5, -80.0);
+    const query = ref.within(point, 10, 'pos');
+
+    ref.f
+
+    query.subscribe(v => {
+        res.send({ len: v.length, v })
+    })
+
+})
+
+// exports.dbWrite = functions.firestore
+//     .document('/positions/{docId}')
+//     .onCreate((change, context) => {
+//         const docId = context.params.docId;
+
+//         if (!docId.includes('testPoint')) return;
+
+//         return delay(15000).then(() => {
+//             return admin
+//                 .firestore()
+//                 .doc('positions/' + docId)
+//                 .delete();
+//         });
 
 
-    });
+//     });
 
-function delay(t) {
-    return new Promise(function(resolve) {
-        setTimeout(resolve.bind(null, null), t);
-    });
-}
+// function delay(t) {
+//     return new Promise(function(resolve) {
+//         setTimeout(resolve.bind(null, null), t);
+//     });
+// }

@@ -13,7 +13,7 @@ import { Point, Feature } from 'geojson';
 })
 export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
   geo = geofirex.init(firebaseApp);
-  points: Observable<any>;
+  points: any;
   testDoc;
 
   collection: GeoFireCollectionRef;
@@ -32,7 +32,7 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
 
     this.points = this.collection.within(center, 200, 'pos');
     this.testDoc = this.points.pipe(
-      map(arr => arr.find(o => o.id === this.docId))
+      map(arr => (arr as any[]).find(o => o.id === this.docId))
     );
 
     // this.testDoc.subscribe(x => {
