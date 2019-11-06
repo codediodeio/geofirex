@@ -130,6 +130,7 @@ export class GeoFireCollectionRef<T> {
     opts = defaultOpts
   ): Observable<(GeoQueryDocument & T)[]> {
     const precision = setPrecsion(radius);
+    const radiusBuffer = radius * 1.02; // buffer for edge distances
     const centerHash = center.hash.substr(0, precision);
     const area = GeoFirePoint.neighbors(centerHash).concat(centerHash);
 
@@ -145,7 +146,7 @@ export class GeoFireCollectionRef<T> {
           .filter(val => {
             const lat = val[field].geopoint.latitude;
             const lng = val[field].geopoint.longitude;
-            return center.distance(lat, lng) <= radius * 1.02; // buffer for edge distances;
+            return center.distance(lat, lng) <= radiusBuffer;
           })
 
           .map(val => {
