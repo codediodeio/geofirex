@@ -118,24 +118,7 @@ describe('GeoFireX', () => {
       done();
     });
 
-    test('should update the query in realtime on add/delete', done => {
-      const query = ref.within(center, 0.5, 'pos');
-      const dbRef = firebase.firestore().doc('bearings/testPoint');
-      let i = 1;
-      query.pipe(take(3)).subscribe(async val => {
-        if (i === 1) {
-          expect(val.length).toBe(4);
-          await dbRef.set({ pos: gfx.point(40.49999, -80) });
-          i++;
-        } else if (i === 2) {
-          expect(val.length).toBe(5);
-          await dbRef.delete();
-          done();
-        } else {
-          expect(val.length).toBe(4);
-        }
-      });
-    });
+
   });
 
   describe('Custom Operators', () => {
@@ -170,6 +153,26 @@ describe('GeoFireX', () => {
       expect(last).toBeCloseTo(5);
       expect(first).toBeLessThan(last);
       done();
+    });
+
+    test('should update the query in realtime on add/delete', async done => {
+      const query = ref.within(center, 0.4, 'pos');
+      const dbRef = firebase.firestore().doc('bearings/testPoint');
+      let i = 1;
+      query.pipe(take(3)).subscribe(async val => {
+        if (i === 1) {
+          expect(val.length).toBe(4);
+          i++;
+          dbRef.set({ pos: gfx.point(40.49999, -80) });
+        } else if (i === 2) {
+          dbRef.delete();
+          expect(val.length).toBe(5);
+          i++;
+        } else {
+          expect(val.length).toBe(4);
+          done();
+        }
+      });
     });
   });
 });

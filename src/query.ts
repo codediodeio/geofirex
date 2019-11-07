@@ -42,9 +42,9 @@ export class GeoFireQuery<T = any> {
   // GEO QUERIES
   /**
    * Queries the Firestore collection based on geograpic radius
-   * @param  {GeoFirePoint} center the starting point for the query, i.e gfx.point(lat, lng)
+   * @param  {FirePoint} center the starting point for the query, i.e gfx.point(lat, lng)
    * @param  {number} radius the radius to search from the centerpoint
-   * @param  {string} field the document field that contains the GeoFirePoint data
+   * @param  {string} field the document field that contains the FirePoint data
    * @param  {GeoQueryOptions} opts=defaultOpts
    * @returns {Observable<GeoQueryDocument>} sorted by nearest to farthest
    */
@@ -171,7 +171,7 @@ function createStream(input): Observable<any> {
 }
 /**
  * RxJS operator that converts a collection to a GeoJSON FeatureCollection
- * @param  {string} field the document field that contains the GeoFirePoint
+ * @param  {string} field the document field that contains the FirePoint
  * @param  {boolean=false} includeProps
  */
 export function toGeoJSON(field: string, includeProps: boolean = false) {

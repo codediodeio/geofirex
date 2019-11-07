@@ -119,7 +119,7 @@ Each doc also contains returns _distance_ and _bearing_ calculated on the query 
 
 ### `point(latitude: number, longitude: number)`
 
-Returns a GeoFirePoint allowing you to create geohashes, format data, and calculate relative distance/bearing.
+Returns an object with the required geohash format to save to Firestore. 
 
 Example: `const point = geo.point(38, -119)`
 
