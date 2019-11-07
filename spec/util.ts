@@ -16,7 +16,7 @@ export const mockResponse = [
       geopoint: new firebase.firestore.GeoPoint(28, -119),
       geohash: 'xxxxxxxxx'
     },
-    queryMetadata: {
+    hitMetadata: {
       bearing: 90.2,
       distance: 120.2
     }
@@ -27,7 +27,7 @@ export const mockResponse = [
       geopoint: new firebase.firestore.GeoPoint(38, -90),
       geohash: 'xxxxxxxxx'
     },
-    queryMetadata: {
+    hitMetadata: {
       bearing: 40.2,
       distance: 20.2
     }

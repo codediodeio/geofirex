@@ -51,17 +51,15 @@ describe('GeoFireX', () => {
 
     test('should calculate distance', () => {
       const p = gfx.point(40.5, -80.0);
-      const { latitude, longitude } = p.geopoint;
-      expect(distance([latitude, longitude], [40.49100679636276, -80])).toBeCloseTo(1.0);
-      expect(distance([latitude, longitude], [-20, 30])).toBeCloseTo(13099.698);
+      expect(gfx.distance(p, gfx.point(40.49100679636276, -80))).toBeCloseTo(1.0);
+      expect(gfx.distance(p, gfx.point(-20, 30) )).toBeCloseTo(13099.698);
     });
 
     test('should calculate bearing', () => {
       const p = gfx.point(40.5, -80.0);
-      const { latitude, longitude } = p.geopoint;
-      expect(bearing([latitude, longitude], [42, -80])).toBeCloseTo(0);
-      expect(bearing([latitude, longitude], [40, -80])).toBeCloseTo(180);
-      expect(bearing([latitude, longitude], [40.5, -80.005])).toBeCloseTo(-90);
+      expect(gfx.bearing(p, gfx.point(42, -80))).toBeCloseTo(0);
+      expect(gfx.bearing(p, gfx.point(40, -80))).toBeCloseTo(180);
+      expect(gfx.bearing(p, gfx.point(40.5, -80.005))).toBeCloseTo(-90);
     });
   });
 
@@ -140,14 +138,14 @@ describe('GeoFireX', () => {
     });
     test('should have query metadata', async done => {
 
-        expect(data[0].queryMetadata.bearing).toBeDefined();
-        expect(data[0].queryMetadata.distance).toBeDefined();
+        expect(data[0].hitMetadata.bearing).toBeDefined();
+        expect(data[0].hitMetadata.distance).toBeDefined();
         done();
 
     });
     test('should be ordered by distance', async done => {
-      const first = data[0].queryMetadata.distance;
-      const last = data[data.length - 1].queryMetadata.distance;
+      const first = data[0].hitMetadata.distance;
+      const last = data[data.length - 1].hitMetadata.distance;
       expect(first).toBeCloseTo(0.2);
       expect(data.length).toBe(12);
       expect(last).toBeCloseTo(5);

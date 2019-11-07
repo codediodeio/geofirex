@@ -8,10 +8,10 @@
 
 # GeoFireX
 
-Realtime Geolocation with Firestore & RxJS. Runs on the Web and Node.js. 
+Realtime Geolocation with Firestore & RxJS. Query geographic points within a radius on the web or Node.js. 
 
-:point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
-:tv: [Video Tutorial](https://angularfirebase.com/lessons/geolocation-query-in-firestore-realtime/)
+- :point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
+- :tv: [Video Tutorial](https://angularfirebase.com/lessons/geolocation-query-in-firestore-realtime/)
 
 ## :zap: QuickStart
 
@@ -21,7 +21,7 @@ npm install geofirex rxjs firebase
 
 ### Initialize
 
-The library is a lightweight client for the Firebase Web SDK that provides tools for wrangling geolocation data in Firestore. You need a [Firebase project](https://firebase.google.com/docs/storage/web/start) to get started.
+The library is a lightweight extension for the Firebase Web and Admin JavaScript SDKs to provide tools for wrangling geolocation data in Firestore.
 
 Web:
 
@@ -78,11 +78,11 @@ const field = 'position';
 const query = cities.within(center, radius, field);
 ```
 
-The query returns a realtime Observable of the document data, plus some useful metadata like _distance_ and _bearing_ from the query centerpoint.
+Each hit returns a realtime Observable of the document data, plus some useful `hitMetadata` like _distance_ and _bearing_ from the query centerpoint.
 
 ```ts
 query.subscribe(console.log);
-// [{ ...documentData, queryMetadata: { distance: 1.23232, bearing: 230.23 }  }]
+// [{ ...documentData, hitMetadata: { distance: 1.23232, bearing: 230.23 }  }]
 ```
 
 You now have a realtime stream of data to visualize on a map.
@@ -98,26 +98,29 @@ Creates reference to a Firestore collection or query that can be used to make ge
 Example:
 
 ```ts
-const ref = geo.query('cities');
+const geoQuery = geo.query('cities');
 
 // OR make a geoquery on top of a firestore query
 
 const query = firestore().collection('cities').where('name', '==', 'Phoenix');
-const geoRef = geo.query(query);
+const geoQuery = geo.query(query);
 ```
 
-#### Performing Geo-Queries
+#### Perform Geo-Queries
 
-`collection.within(center: GeoFirePoint, radius: number, field: string)`
+```js
+geoQuery.within(center: FirePoint, radius: number, field: string)
+        .subscribe((hits) => console.log((hits)))
+```
 
 Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
 
-Each doc also contains returns _distance_ and _bearing_ calculated on the query on the `queryMetadata` property.
+Each doc also contains returns _distance_ and _bearing_ calculated on the query on the `hitMetadata` property.
 
-**Returns:** `Observable<object[]>`
+**Returns:** `Observable<T[]>`
 
 
-### `point(latitude: number, longitude: number)`
+### `point(latitude: number, longitude: number): FirePoint`
 
 Returns an object with the required geohash format to save to Firestore. 
 
@@ -129,7 +132,7 @@ A point is a plain JS object with two properties.
 - `point.geopoint` Returns a Firestore GeoPoint 
 
 
-## :pizza: Additional Features
+## Additional Features
 
 The goal of this package is to facilitate rapid feature development with tools like MapBox, Google Maps, and D3.js. If you have an idea for a useful feature, open an issue.
 
@@ -147,7 +150,7 @@ ref.within(center, radius, field, { log: true })
 
 Convenience methods for calculating distance and bearing. 
 
-- `geo.distance(to, from)` Haversine distance 
+- `geo.distance(geo.point(38, -118), geo.point(40, -115))` Haversine distance 
 - `geo.bearing(to, from)` Haversine bearing 
 
 ### `toGeoJSON` Operator
@@ -179,7 +182,7 @@ async function getCars {
 }
 ```
 
-## :zap: Tips
+## Tips
 
 ### Compound Queries
 

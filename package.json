@@ -31,8 +31,8 @@
     "author": "Jeff Delaney",
     "license": "ISC",
     "peerDependencies": {
-        "rxjs": "^6.0.0",
-        "firebase": "^5.2.0"
+        "firebase": "^7.2.0",
+        "rxjs": "^6.2.1"
     },
     "devDependencies": {
         "@firebase/firestore-types": "^0.4.3",
@@ -57,7 +57,7 @@
         "rollup-plugin-sizes": "^0.4.2",
         "rollup-plugin-typescript2": "0.12.0",
         "rollup-plugin-uglify": "^3.0.0",
-        "rxjs": "^6.5.3",
+        "rxjs": "^6.2.1",
         "ts-jest": "^24.1.0",
         "ts-lint": "^4.5.1",
         "ts-loader": "^6.2.1",
