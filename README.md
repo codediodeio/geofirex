@@ -75,7 +75,7 @@ const center = geo.point(40.1, -119.1);
 const radius = 100;
 const field = 'position';
 
-const query = cities.within(center, radius, field);
+const query = geo.query(cities).within(center, radius, field);
 ```
 
 Each hit returns a realtime Observable of the document data, plus some useful `hitMetadata` like _distance_ and _bearing_ from the query centerpoint.
@@ -98,12 +98,12 @@ Creates reference to a Firestore collection or query that can be used to make ge
 Example:
 
 ```ts
-const geoQuery = geo.query('cities');
+const geoRef = geo.query('cities');
 
 // OR make a geoquery on top of a firestore query
 
-const query = firestore().collection('cities').where('name', '==', 'Phoenix');
-const geoQuery = geo.query(query);
+const firestoreRef = firestore().collection('cities').where('name', '==', 'Phoenix');
+const geoRef = geo.query(firestoreRef);
 ```
 
 #### `within(center: FirePoint, radius: number, field: string): Observable<T[]>`
@@ -117,7 +117,6 @@ Query the parent Firestore collection by geographic distance. It will return doc
 
 Each doc also contains returns _distance_ and _bearing_ calculated on the query on the `hitMetadata` property.
 
-**Returns:** `Observable<T[]>`
 
 
 ### `point(latitude: number, longitude: number): FirePoint`

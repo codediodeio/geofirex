@@ -57,11 +57,10 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
           const point = this.geo.point(lat, lng);
           const data = { name: 'testPoint', pos: point, allow: true };
           this.collection.doc(this.docId).set(data);
-          console.log(v);
+
         }),
         finalize(() => {
           this.clicked = false;
-          // this.collection.setPoint('testPoint', 32.9, -114.2, 'pos');
           this.collection.doc(this.docId).delete();
         })
       )
