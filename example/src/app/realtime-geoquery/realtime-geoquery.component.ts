@@ -5,6 +5,7 @@ import * as firebase from 'firebase/app';
 import * as geofirex from 'geofirex';
 import { GeoFireQuery } from 'geofirex';
 
+
 @Component({
   selector: 'app-realtime-geoquery',
   templateUrl: './realtime-geoquery.component.html',

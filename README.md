@@ -109,8 +109,15 @@ const geoRef = geo.query(firestoreRef);
 #### `within(center: FirePoint, radius: number, field: string): Observable<T[]>`
 
 ```js
-geoQuery.within(center: FirePoint, radius: number, field: string)
-        .subscribe(hits => console.log(hits))
+const query = geoRef.within(center: FirePoint, radius: number, field: string)
+        
+query.subscribe(hits => console.log(hits))
+
+// OR fetch as a promise
+
+import { get } from 'geofirex';
+
+const hits = await get(query);
 ```
 
 Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
@@ -157,6 +164,8 @@ Convenience methods for calculating distance and bearing.
 A custom RxJS operator that transforms a collection into a [GeoJSON FeatureCollection](https://macwright.org/2015/03/23/geojson-second-bite.html#featurecollection). Very useful for tools like [MapBox](https://blog.mapbox.com/real-time-maps-for-live-events-fad0b334e4e) that can use GeoJSON to update a realtime data source.
 
 ```ts
+import { toGeoJSON } from 'geofirex';
+
 const query = geo.query('cars').within(...)
 
 query.pipe( toGeoJSON() )
@@ -192,11 +201,10 @@ Example:
 
 ```ts
 // Make a query like you normally would
-const query = firestore().collection('users').where('status', '==', 'online');
+const users = firestore().collection('users').where('status', '==', 'online');
 
-const users = geo.query(query)
 
-const nearbyOnlineUsers = users.within(center, radius, field);
+const nearbyOnlineUsers = geo.query(users).within(center, radius, field);
 ```
 
 Note: This query requires a composite index, which you will be prompted to create with an error from Firestore on the first request.
