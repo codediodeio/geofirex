@@ -91,7 +91,7 @@ You now have a realtime stream of data to visualize on a map.
 
 ## :notebook: API
 
-### `query(ref: CollectionReference | Query | string)`
+### `query<T>(ref: CollectionReference | Query | string): GeoFireQuery<T>`
 
 Creates reference to a Firestore collection or query that can be used to make geo-queries.
 
@@ -106,11 +106,11 @@ const query = firestore().collection('cities').where('name', '==', 'Phoenix');
 const geoQuery = geo.query(query);
 ```
 
-#### Perform Geo-Queries
+#### `within(center: FirePoint, radius: number, field: string): Observable<T[]>`
 
 ```js
 geoQuery.within(center: FirePoint, radius: number, field: string)
-        .subscribe((hits) => console.log((hits)))
+        .subscribe(hits => console.log(hits))
 ```
 
 Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
@@ -141,7 +141,7 @@ The goal of this package is to facilitate rapid feature development with tools l
 Each query runs on a set of geohash squares, so you may read more documents than actually exist inside the radius. Use the `log` option to examine the total query size and latency.
 
 ```js
-ref.within(center, radius, field, { log: true })
+query.within(center, radius, field, { log: true })
 ```
 
 ![Logging GeoQueries](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/geofirex-logging.PNG?alt=media&token=9b8b487d-18b2-4e5f-bb04-564fa6f2996d)
