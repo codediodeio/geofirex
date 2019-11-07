@@ -13,13 +13,10 @@ Realtime Geolocation with Firestore & RxJS. Runs on the Web and Node.js.
 :point_right: [Live Demo](https://geo-test-c92e4.firebaseapp.com)
 :tv: [Video Tutorial](https://angularfirebase.com/lessons/geolocation-query-in-firestore-realtime/)
 
-## :checkered_flag: QuickStart
+## :zap: QuickStart
 
 ```shell
-npm install geofirex
-
-# peer dependencies
-npm install rxjs firebase
+npm install geofirex rxjs firebase
 ```
 
 ### Initialize
@@ -42,6 +39,8 @@ Node.js with the Firebase Admin SDK:
 
 ```js
 const admin = require('firebase-admin');
+admin.initializeApp();
+
 const geo = require('geofirex').init(admin);
 ```
 
@@ -52,25 +51,24 @@ import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 ```
 
-### Write Geo Data
+### Write Geolocation Data
 
-Next, add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geolocation tools. The `point` method returns a class 
+Next, add some geolocation data in your database using the main Firebase SDK. You can add multiple points to a single doc. Calling `geo.point(lat, lng)` creates an object with a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). Data must be saved in this format to be queried.
 
 ```ts
-const cities = geo.collection('cities');
+const cities = firestore().collection('cities');
 
-const point = geo.point(40, -119);
+const position = geo.point(40, -119);
 
-cities.add({ name: 'Phoenix', position: point.data() });
+cities.add({ name: 'Phoenix', position });
 ```
 
-Calling `point.data()` returns an object that contains a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). It should look like this in your database. You can name the object whatever you want and even save multiple points on a single document.
 
 ![](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/point1.png?alt=media&token=0c833700-3dbd-476a-99a9-41c1143dbe97)
 
 ### Query Geo Data
 
-Now let's query Firestore for _cities.position within 100km radius of a centerpoint_.
+Query Firestore for _cities.position within 100km radius of a centerpoint_.
 
 ```ts
 const center = geo.point(40.1, -119.1);
@@ -93,14 +91,19 @@ You now have a realtime stream of data to visualize on a map.
 
 ## :notebook: API
 
-### `collection(path: string, query? QueryFn)`
+### `query(ref: CollectionReference | Query | string)`
 
-Creates reference to a Firestore collection that can be used to make geo-queries and perform writes If you pass an optional Firestore query function, all subsequent geo-queries will be limited to this subset of documents
+Creates reference to a Firestore collection or query that can be used to make geo-queries.
 
 Example:
 
 ```ts
-const collection = geo.collection('cities');
+const ref = geo.query('cities');
+
+// OR make a geoquery on top of a firestore query
+
+const query = firestore().collection('cities').where('name', '==', 'Phoenix');
+const geoRef = geo.query(query);
 ```
 
 #### Performing Geo-Queries
@@ -113,23 +116,6 @@ Each doc also contains returns _distance_ and _bearing_ calculated on the query 
 
 **Returns:** `Observable<object[]>`
 
-#### Write Data
-
-Write data just like you would in Firestore
-
-`collection.add(data)`
-
-Or use one of the client's conveniece methods
-
-- `collection.setDoc(id, data)` - Set a document in the collection with an ID.
-- `collection.setPoint(id, field, lat, lng)`- Add a geohash to an existing doc
-
-#### Read Data
-
-In addition to Geo-Queries, you can also read the collection like you would normally in Firestore, but as an Observable
-
-- `collection.data()`- Observable of document data
-- `collection.snapshot()`- Observable of Firestore QuerySnapshot
 
 ### `point(latitude: number, longitude: number)`
 
@@ -137,20 +123,11 @@ Returns a GeoFirePoint allowing you to create geohashes, format data, and calcul
 
 Example: `const point = geo.point(38, -119)`
 
-#### Get Data
+A point is a plain JS object with two properties.
 
-A point can return data in a variety of formats. 
+- `point.geohash` Returns a geohash string at precision 9
+- `point.geopoint` Returns a Firestore GeoPoint 
 
-- `point.hash()` Returns a geohash string at precision 9
-- `point.geoPoint()` Returns a Firestore GeoPoint
-- `point.geoJSON()` Returns data as a GeoJSON `Feature<Point>`
-- `point.coords()` Returns coordinates as `[latitude, longitude]`
-- `point.data()` Returns data object suitable for saving to the Firestore database
-
-#### Geo Calculations
-
-- `point.distance(latitude, longitude)` Haversine distance to a point
-- `point.bearing(latitude, longitude)` Haversine bearing to a point
 
 ## :pizza: Additional Features
 
@@ -158,15 +135,27 @@ The goal of this package is to facilitate rapid feature development with tools l
 
 ### Logging
 
+Each query runs on a set of geohash squares, so you may read more documents than actually exist inside the radius. Use the `log` option to examine the total query size and latency.
+
+```js
+ref.within(center, radius, field, { log: true })
+```
 
 ![Logging GeoQueries](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/geofirex-logging.PNG?alt=media&token=9b8b487d-18b2-4e5f-bb04-564fa6f2996d)
+
+### Geo Calculations
+
+Convenience methods for calculating distance and bearing. 
+
+- `geo.distance(to, from)` Haversine distance 
+- `geo.bearing(to, from)` Haversine bearing 
 
 ### `toGeoJSON` Operator
 
 A custom RxJS operator that transforms a collection into a [GeoJSON FeatureCollection](https://macwright.org/2015/03/23/geojson-second-bite.html#featurecollection). Very useful for tools like [MapBox](https://blog.mapbox.com/real-time-maps-for-live-events-fad0b334e4e) that can use GeoJSON to update a realtime data source.
 
 ```ts
-const query = geo.collection('cars').within(...)
+const query = geo.query('cars').within(...)
 
 query.pipe( toGeoJSON() )
 
@@ -185,28 +174,31 @@ Don't need a realtime stream? Convert any query observable to a promise by wrapp
 import { get } from 'geofirex';
 
 async function getCars {
-    const query = geo.collection('cars').within(...)
+    const query = geo.query('cars').within(...)
     const cars = await get(query)
 }
 ```
 
 ## :zap: Tips
 
-### Scale to Massive Collections
+### Compound Queries
 
-It's possibe to build Firestore collections with billions of documents. One of the main motivations of this project was to make geoqueries possible on a queried subset of data. You can make a regular Firestore query on collection by passing a callback as the second argument, then all geoqueries will scoped these contstraints.
+The only well-supported type of compound query is `where`. A geoquery combines multiple smaller queries into a unified radius, so  `limit` and pagination operators will not provide predictable results - a better approach is to search a smaller radius and do your sorting client-side. 
 
-Note: This query requires a composite index, which you will be prompted to create with an error from Firestore on the first request.
 
 Example:
 
 ```ts
-const users = geo.collection('users', ref =>
-  ref.where('status', '==', 'online')
-);
+// Make a query like you normally would
+const query = firestore().collection('users').where('status', '==', 'online');
+
+const users = geo.query(query)
 
 const nearbyOnlineUsers = users.within(center, radius, field);
 ```
+
+Note: This query requires a composite index, which you will be prompted to create with an error from Firestore on the first request.
+
 
 ### Usage with RxJS < 6.2, or Ionic v3
 
@@ -218,24 +210,11 @@ Example:
 npm i rxjs@latest rxjs-compat
 ```
 
-### Seeing this error: `DocumentReference.set() called with invalid data`
-
-Firestore writes cannot use custom classes, so make sure to call the `data` getter on the point.
-
-```ts
-const point = geo.point(40, -50);
-// This is an ERROR
-ref.add({ location: point });
-
-// This is GOOD
-ref.add({ location: point.data() });
-```
-
 ### Make Dynamic Queries the RxJS Way
 
 ```ts
 const radius = new BehaviorSubject(1);
-const cities = geo.collection('cities');
+const cities = geo.query('cities');
 
 const points = this.radius.pipe(
   switchMap(rad => {
@@ -249,4 +228,4 @@ radius.next(23);
 
 ### Always Order by `[Latitude, Longitude]`
 
-The GeoJSON spec formats coords as `[Longitude, Latitude]` to represent an X/Y plane. However, the Firebase GeoPoint uses `[Latitude, Longitude]`. For consistency, this libary will always require you to use the latter format.
+The GeoJSON spec formats coords as `[Longitude, Latitude]` to represent an X/Y plane. However, the Firebase GeoPoint uses `[Latitude, Longitude]`. For consistency, this library always requires to use the latter Firebase-style format.

@@ -14,7 +14,7 @@
         "url": "https://github.com/codediodeio/geofirex.git"
     },
     "scripts": {
-        "test": "jest --coverage --forceExit",
+        "test": "jest --coverage --forceExit --runInBand",
         "test:watch": "jest --watchAll",
         "build": "rollup -c",
         "dev": "rollup -c -w",

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject, interval } from 'rxjs';
 import { switchMap, tap, map, take, finalize } from 'rxjs/operators';
-import * as firebaseApp from 'firebase/app';
+import * as firebase from 'firebase/app';
 import * as geofirex from 'geofirex';
 import { GeoFireCollectionRef } from 'geofirex';
 import { Point, Feature } from 'geojson';
@@ -12,27 +12,30 @@ import { Point, Feature } from 'geojson';
   styleUrls: ['./realtime-geoquery.component.scss']
 })
 export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
-  geo = geofirex.init(firebaseApp);
-  points: any;
+  geo = geofirex.init(firebase);
+  points: Observable<any>;
   testDoc;
 
-  collection: GeoFireCollectionRef;
+  path: 'positions';
+  collection;
+  geoCollection;
   clicked;
-  docId;
+  docId = 'testPoint' + Date.now();
 
   constructor() {
+    this.collection = firebase.firestore().collection('positions');
     window.onbeforeunload = () => {
-      this.collection.delete(this.docId);
+      this.collection.doc(this.docId).delete();
     };
   }
 
   ngOnInit() {
-    this.collection = this.geo.collection('positions');
+    this.geoCollection = this.geo.query('positions');
     const center = this.geo.point(34, -113);
 
-    this.points = this.collection.within(center, 200, 'pos');
+    this.points = this.geoCollection.within(center, 200, 'pos');
     this.testDoc = this.points.pipe(
-      map(arr => (arr as any[]).find(o => o.id === this.docId))
+      map(arr => arr.find(o => o.id === this.docId))
     );
 
     // this.testDoc.subscribe(x => {
@@ -51,7 +54,7 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
 
     const randA = this.rand();
     const randB = this.rand();
-    this.docId = 'testPoint' + Date.now();
+
     interval(700)
       .pipe(
         take(30),
@@ -60,14 +63,14 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
           lng += randB * Math.random();
 
           const point = this.geo.point(lat, lng);
-          const data = { name: 'testPoint', pos: point.data(), allow: true };
-          this.collection.setDoc(this.docId, data);
+          const data = { name: 'testPoint', pos: point, allow: true };
+          this.collection.doc(this.docId).set(data);
           console.log(v);
         }),
         finalize(() => {
           this.clicked = false;
           // this.collection.setPoint('testPoint', 32.9, -114.2, 'pos');
-          this.collection.delete(this.docId);
+          this.collection.doc(this.docId).delete();
         })
       )
       .subscribe();

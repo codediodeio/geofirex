@@ -12,7 +12,7 @@ const rx = require('rxjs');
 exports.testFun = functions.https.onRequest((req, res) => {
     console.log(geo.point(38.5, -119.5))
 
-    const ref = geo.collection('bearings')
+    const ref = geo.query('bearings')
     const point = geo.point(40.5, -80.0);
     const query = ref.within(point, 10, 'pos');
 

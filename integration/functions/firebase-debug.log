@@ -432,3 +432,124 @@
 [info] >          appHooks_: {} },
 [info] >       default: [Circular] } }
 [info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).
+[info] Shutting down...
+[debug] [2019-11-07T06:12:19.546Z] ----------------------------------------------------------------------
+[debug] [2019-11-07T06:12:19.548Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-11-07T06:12:19.548Z] CLI Version:   7.5.0
+[debug] [2019-11-07T06:12:19.548Z] Platform:      win32
+[debug] [2019-11-07T06:12:19.548Z] Node Version:  v10.16.0
+[debug] [2019-11-07T06:12:19.548Z] Time:          Wed Nov 06 2019 23:12:19 GMT-0700 (Mountain Standard Time)
+[debug] [2019-11-07T06:12:19.548Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-07T06:12:19.554Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-07T06:12:19.554Z] > authorizing via signed-in user
+[debug] [2019-11-07T06:12:19.554Z] [iam] checking project geo-test-c92e4 for permissions ["firebase.projects.get"]
+[debug] [2019-11-07T06:12:19.555Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-11-07T06:12:19.555Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-11-07T06:12:19.787Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T06:12:19.804Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/geo-test-c92e4:testIamPermissions  
+
+[debug] [2019-11-07T06:12:20.212Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T06:12:20.213Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/geo-test-c92e4  
+ 
+[debug] [2019-11-07T06:12:20.496Z] <<< HTTP RESPONSE 200
+[warn] !  Your functions directory does not specify a Node version.
+   - Learn more at https://firebase.google.com/docs/functions/manage-functions#set_runtime_options
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "C:\Users\jeffd23\apps\geofirex\integration\functions" for Cloud Functions...
+[debug] [2019-11-07T06:12:23.297Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T06:12:23.297Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T06:12:23.299Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T06:12:23.300Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T06:12:23.300Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).
+[debug] [2019-11-07T06:12:25.228Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T06:12:25.499Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T06:12:25.500Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T06:12:25.502Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T06:12:25.503Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T06:12:25.503Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[debug] [2019-11-07T06:12:25.697Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T06:12:25.697Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T06:12:25.697Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T06:12:25.702Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\41972"}
+[debug] [2019-11-07T06:12:25.703Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\41972"}
+[debug] [2019-11-07T06:12:25.707Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T06:12:26.070Z] [runtime-status] Ephemeral server survived. {}
+[info] >  { distance: 9.99999999999909, bearing: 180 }
+[info] >  { distance: 9.99999999999906, bearing: -90.0000000000061 }
+[info] >  { distance: 4.999999999999546, bearing: 180 }
+[info] >  { distance: 4.999999999999067, bearing: -90 }
+[info] >  { distance: 0.9999999999992769, bearing: 180 }
+[info] >  { distance: 0.9999999999993493, bearing: -89.99999999997975 }
+[info] >  { distance: 0.19999999999938134, bearing: 180 }
+[info] >  { distance: 0.19999999999888898, bearing: -89.99999999979737 }
+[info] >  { distance: 0.20000000000009063, bearing: 89.99999999979737 }
+[info] >  { distance: 0.19999999999938134, bearing: 0 }
+[info] >  { distance: 0.9999999999993493, bearing: 89.99999999997975 }
+[info] >  { distance: 1.000000000000067, bearing: 0 }
+[info] >  { distance: 4.999999999999546, bearing: 0 }
+[info] >  { distance: 9.999999999999881, bearing: 0 }
+[info] >  { distance: 5.000000000000271, bearing: 90 }
+[info] >  { distance: 9.99999999999906, bearing: 90.0000000000061 }
+[info] i  functions: Finished "testFun" in ~1s
+[debug] [2019-11-07T06:56:27.328Z] File C:\Users\jeffd23\apps\geofirex\integration\functions\index.js changed, reloading triggers
+[debug] [2019-11-07T06:56:28.716Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T06:56:28.717Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T06:56:28.720Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T06:56:28.722Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T06:56:28.723Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }

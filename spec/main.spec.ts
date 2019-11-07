@@ -6,14 +6,15 @@ import { config, mockResponse } from './util';
 import * as _ from 'lodash';
 import 'jest';
 
-import { GeoFirePoint } from '../src/point';
-import { GeoFireCollectionRef, toGeoJSON, get } from '../src/collection';
+import { GeoFireQuery, toGeoJSON, get } from '../src/query';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { first, take, switchMap } from 'rxjs/operators';
+import { take, switchMap } from 'rxjs/operators';
 
-import { GeoFireClient } from '../src/client';
+import { neighbors, distance, bearing } from '../src/util';
 
-describe('RxGeofire', () => {
+import { GeoFireClient, FirePoint } from '../src/client';
+
+describe('GeoFireX', () => {
   let gfx: GeoFireClient;
   beforeAll(() => {
     firebase.initializeApp(config);
@@ -29,145 +30,55 @@ describe('RxGeofire', () => {
     expect(gfx.app).toBe( firebase );
   });
 
-  describe('GeoHash', () => {
-    let point: GeoFirePoint;
+  describe('FirePoint', () => {
+    let point: FirePoint;
     beforeEach(() => {
       point = gfx.point(38, -119);
     });
 
-    test('should initilize with accessors', () => {
-      expect(point).toBeInstanceOf(GeoFirePoint);
-      expect(point.geoPoint()).toBeInstanceOf(firebase.firestore.GeoPoint);
-      expect(point.data().geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
+    test('should initilize an object with a Firestore GeoPoint', () => {
+      expect(point.geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
     });
 
     test('should create a GeoHash', () => {
-      expect(point.hash().length).toBe(9);
+      expect(point.geohash.length).toBe(9);
     });
 
-    test('should return its neighbors', () => {
-      expect(point.neighbors()).toBeInstanceOf(Array);
-      expect(point.neighbors().length).toBe(8);
+    test('should calculate neighbors', () => {
+      expect(neighbors(point.geohash)).toBeInstanceOf(Array);
+      expect(neighbors(point.geohash).length).toBe(8);
     });
 
     test('should calculate distance', () => {
       const p = gfx.point(40.5, -80.0);
-      expect(p.distance(40.49100679636276, -80)).toBeCloseTo(1.0);
-      expect(p.distance(-20, 30)).toBeCloseTo(13099.698);
+      const { latitude, longitude } = p.geopoint;
+      expect(distance([latitude, longitude], [40.49100679636276, -80])).toBeCloseTo(1.0);
+      expect(distance([latitude, longitude], [-20, 30])).toBeCloseTo(13099.698);
     });
 
     test('should calculate bearing', () => {
       const p = gfx.point(40.5, -80.0);
-      expect(p.bearing(42, -80)).toBeCloseTo(0);
-      expect(p.bearing(40, -80)).toBeCloseTo(180);
-      expect(p.bearing(40.5, -80.005)).toBeCloseTo(-90);
-    });
-  });
-
-  describe('CollectionRef', () => {
-    let ref: GeoFireCollectionRef;
-    let hash;
-    let phx;
-    beforeEach(() => {
-      ref = gfx.collection('cities');
-      hash = gfx.point(33.45, -112.1);
-      phx = { id: 'phoenix', name: 'Phoenix, AZ', position: hash.data() };
-    });
-
-    test('should return an Observable', done => {
-      expect(ref.data()).toBeInstanceOf(Observable);
-
-      ref
-        .data()
-        .pipe(first())
-        .subscribe(val => {
-          expect(val).toContainEqual({ id: 'paris', name: 'Paris, FR' });
-          expect(val).toBeInstanceOf(Array);
-          done();
-        });
-    });
-
-    test('should filter docs with a query and be able to change its query', done => {
-      ref = gfx.collection('cities', ref =>
-        ref.where('name', '==', 'Austin, TX')
-      );
-
-      ref.data().subscribe(val => {
-        expect(val.length).toBe(1);
-        expect(val[0]).toEqual({ id: 'austin', name: 'Austin, TX' });
-      });
-
-      setTimeout(() => {
-        ref
-          .data()
-          .pipe(first())
-          .subscribe(val => {
-            expect(val[0]).toEqual({ id: 'austin', name: 'Austin, TX' });
-          });
-      }, 50);
-
-      setTimeout(() => {
-        ref.changeQuery(ref => ref.where('name', '==', 'Hilo, HI'));
-        ref
-          .data()
-          .pipe(first())
-          .subscribe(val => {
-            expect(val.length).toBe(1);
-            expect(val[0]).toEqual({ id: 'hilo', name: 'Hilo, HI' });
-            done();
-          });
-      }, 100);
-    });
-
-    test('should add items to the database', async done => {
-      await ref.setDoc('phoenix', phx);
-      ref
-        .data()
-        .pipe(first())
-        .subscribe(val => {
-          expect(val).toContainEqual(phx);
-          done();
-        });
-    });
-
-    test('should remove items to the database', async done => {
-      ref.delete('phoenix');
-      sleep(200);
-      ref
-        .data()
-        .pipe(first())
-        .subscribe(arr => {
-          expect(_.find(arr, val => val.id === 'phoenix')).toBeUndefined();
-          done();
-        });
-    });
-
-    test('the "get" function should convert an observable to a promise', async done => {
-      const query = ref.data();
-      const promise = get(query);
-
-      expect(promise).toBeInstanceOf(Promise);
-
-      const data = await promise;
-      expect(data.length).toBeGreaterThan(1);
-      done();
+      const { latitude, longitude } = p.geopoint;
+      expect(bearing([latitude, longitude], [42, -80])).toBeCloseTo(0);
+      expect(bearing([latitude, longitude], [40, -80])).toBeCloseTo(180);
+      expect(bearing([latitude, longitude], [40.5, -80.005])).toBeCloseTo(-90);
     });
   });
 
   describe('within(...) queries', () => {
-    let ref: GeoFireCollectionRef;
+    let ref: GeoFireQuery;
     let center;
+    let dbRef
     beforeEach(() => {
-      ref = gfx.collection('bearings');
+      // dbRef
+      ref = gfx.query('bearings');
       center = gfx.point(40.5, -80.0);
     });
 
     test('work with compound Firestore queries', async done => {
-      const ref = gfx.collection('compound', ref =>
-        ref.where('color', '==', 'blue')
-      );
+      const dbRef = firebase.firestore().collection('compound').where('color', '==', 'blue')
       const point = gfx.point(38, -119);
-      const query = ref.within(point, 50, 'point');
+      const query = gfx.query(dbRef).within(point, 50, 'point');
 
       const val = await resolve(query);
       expect(val.length).toBe(1);
@@ -207,17 +118,18 @@ describe('RxGeofire', () => {
       done();
     });
 
-    test('should update the query in realtime on add/delete', async done => {
+    test('should update the query in realtime on add/delete', done => {
       const query = ref.within(center, 0.5, 'pos');
+      const dbRef = firebase.firestore().doc('bearings/testPoint');
       let i = 1;
-      query.pipe(take(3)).subscribe(val => {
+      query.pipe(take(3)).subscribe(async val => {
         if (i === 1) {
           expect(val.length).toBe(4);
-          ref.setDoc('testPoint', { pos: gfx.point(40.49999, -80).data() });
+          await dbRef.set({ pos: gfx.point(40.49999, -80) });
           i++;
         } else if (i === 2) {
           expect(val.length).toBe(5);
-          ref.delete('testPoint');
+          await dbRef.delete();
           done();
         } else {
           expect(val.length).toBe(4);
@@ -235,35 +147,33 @@ describe('RxGeofire', () => {
   });
 
   describe('Query Shape', () => {
-    let ref: GeoFireCollectionRef<any>;
+    let ref: GeoFireQuery<any>;
     let center;
     let data;
     beforeAll(async () => {
-      ref = gfx.collection('bearings');
+      ref = gfx.query('bearings');
       center = gfx.point(40.5, -80.0);
       data = await get(ref.within(center, 5, 'pos'));
     });
     test('should have query metadata', async done => {
-      expect(data[0].queryMetadata.bearing).toBeDefined();
-      expect(data[0].queryMetadata.distance).toBeDefined();
-      done();
+
+        expect(data[0].queryMetadata.bearing).toBeDefined();
+        expect(data[0].queryMetadata.distance).toBeDefined();
+        done();
+
     });
     test('should be ordered by distance', async done => {
       const first = data[0].queryMetadata.distance;
       const last = data[data.length - 1].queryMetadata.distance;
-      console.log(111111, data.length,last)
       expect(first).toBeCloseTo(0.2);
-      expect(last).toBeGreaterThan(1);
+      expect(data.length).toBe(12);
+      expect(last).toBeCloseTo(5);
       expect(first).toBeLessThan(last);
       done();
     });
   });
 });
 
-function sleep(delay) {
-  const start = Date.now();
-  while (Date.now() < start + delay);
-}
 
 function resolve(obsv, n = 1) {
   return obsv.pipe(take(n)).toPromise();

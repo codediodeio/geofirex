@@ -24,7 +24,7 @@ export class BasicGeoqueryComponent implements OnInit {
     this.points = this.radius.pipe(
       switchMap(r => {
         console.log('new rad');
-        return this.geo.collection('bearings').within(center, r, field, { log: true });
+        return this.geo.query('bearings').within(center, r, field, { log: true });
       }),
       shareReplay(1)
     );

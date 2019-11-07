@@ -2,13 +2,15 @@
 
 import { Observable, combineLatest, Subject } from 'rxjs';
 import { shareReplay, map, first, tap, finalize, takeUntil } from 'rxjs/operators';
-import { GeoFirePoint } from './point';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
-import { neighbors, toGeoJSONFeature } from './util';
+import { neighbors, toGeoJSONFeature, distance, bearing } from './util';
+
+
 
 import * as fb from 'firebase/app';
 import { FirebaseSDK } from './interfaces';
+import { FirePoint } from './client';
 
 export type QueryFn = (ref: fb.firestore.CollectionReference) => fb.firestore.Query;
 
@@ -27,91 +29,16 @@ export interface GeoQueryDocument {
   queryMetadata: QueryMetadata;
 }
 
-export class GeoFireCollectionRef<T = any> {
-  private ref: fb.firestore.CollectionReference;
-  private query: fb.firestore.Query;
-  private stream: Observable<fb.firestore.QuerySnapshot>;
+export class GeoFireQuery<T = any> {
 
   constructor(
     private app: FirebaseSDK,
-    private path: string,
-    query?: QueryFn
+    private ref?: fb.firestore.CollectionReference | fb.firestore.Query | string,
   ) {
-    this.ref = app.firestore().collection(path);
-    if (query) this.query = query(this.ref);
-    this.setStream();
+    if (typeof ref === 'string') {
+      this.ref = this.app.firestore().collection(ref);
+    }
   }
-  /**
-   * Return the QuerySnapshot as an observable
-   * @returns {Observable<firestore.QuerySnapshot>}
-   */
-  snapshot() {
-    return this.stream;
-  }
-  /**
-   * Return the collection mapped to data payload with with ID
-   * @param {string} id='id'
-   * @returns {Observable<any[]>}
-   */
-  data(id = 'id'): Observable<any[]> {
-    return this.stream.pipe(snapToData(id));
-  }
-  /**
-   * Add a document
-   * @param  {any} data
-   * @returns {Promise<firestore.DocumentReference>}
-   */
-  add(data: any): Promise<fb.firestore.DocumentReference> {
-    return this.ref.add(data);
-  }
-  /**
-   * Delete a document in the collection based on the document ID
-   * @param  {string} id
-   * @returns {Promise<void>}
-   */
-  delete(id: string) {
-    return this.ref.doc(id).delete();
-  }
-  /**
-   * Create or update a document in the collection based on the document ID
-   * @param  {string} id
-   * @param  {any} data
-   * @param  {SetOptions} options
-   * @returns {Promise<void>}
-   */
-  setDoc(id: string, data: any, options?: fb.firestore.SetOptions) {
-    return this.ref.doc(id).set(data, options);
-  }
-
-  /**
-   * Create or update a document with GeoFirePoint data
-   * @param  {string} id document id
-   * @param  {string} field name of point on the doc
-   * @param  {Latitude} latitude
-   * @param  {Longitude} longitude
-   * @returns {Promise<void>}
-   */
-  setPoint(
-    id: string,
-    field: string,
-    latitude: number,
-    longitude: number
-  ) {
-    const point = new GeoFirePoint(this.app, latitude, longitude).data();
-    return this.ref.doc(id).set({ [field]: point }, { merge: true });
-  }
-
-  // TODO remove?
-  changeQuery(query: QueryFn) {
-    this.query = query(this.ref);
-    this.setStream();
-  }
-
-  private setStream() {
-    this.query = this.query || this.ref;
-    this.stream = createStream(this.query || this.ref).pipe(shareReplay(1));
-  }
-
   // GEO QUERIES
   /**
    * Queries the Firestore collection based on geograpic radius
@@ -122,7 +49,7 @@ export class GeoFireCollectionRef<T = any> {
    * @returns {Observable<GeoQueryDocument>} sorted by nearest to farthest
    */
   within(
-    center: GeoFirePoint,
+    center: FirePoint,
     radius: number,
     field: string,
     opts?: GeoQueryOptions
@@ -130,8 +57,10 @@ export class GeoFireCollectionRef<T = any> {
     opts = { ...defaultOpts, ...opts }
     const precision = setPrecsion(radius);
     const radiusBuffer = radius * 1.02; // buffer for edge distances
-    const centerHash = center.hash().substr(0, precision);
+    const centerHash = center.geohash.substr(0, precision);
     const area = neighbors(centerHash).concat(centerHash);
+
+    const { latitude: centerLat, longitude: centerLng } = center.geopoint;
 
     // Used to cancel the individual geohash subscriptions
     const complete = new Subject();
@@ -147,8 +76,6 @@ export class GeoFireCollectionRef<T = any> {
 
     const tick = Date.now();
 
-
-
     const combo = combineLatest(...queries).pipe(
       map(arr => {
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
@@ -157,15 +84,15 @@ export class GeoFireCollectionRef<T = any> {
           .filter(val => {
 
             const { latitude, longitude } = val[field].geopoint;
-            return center.distance(latitude, longitude) <= radiusBuffer;
+            
+            return distance([centerLat, centerLng], [latitude, longitude]) <= radiusBuffer;
           })
 
           if (opts.log) { 
             console.group('GeoFireX Query');
-            console.log('💡 Logs update on every change to the query');
-            console.log(`🌐 Center ${center.coords()}. Radius ${radius}`)
+            console.log(`🌐 Center ${[centerLat, centerLng]}. Radius ${radius}`)
             // const cached = reduced.reduce((a, c) => a + (c.fromCache ? 1 : 0), 0);
-            console.log(`📍 Hits: ${reduced.length}.`) //Cached ${cached}
+            console.log(`📍 Hits: ${reduced.length}`) //Cached ${cached}
             console.log(`⌚ Elapsed time: ${Date.now() - tick}ms`);
             console.log(`🟢 Within Radius: ${filtered.length}`);
             console.groupEnd();
@@ -176,8 +103,8 @@ export class GeoFireCollectionRef<T = any> {
             const { latitude, longitude } = val[field].geopoint;
             
             const queryMetadata = {
-              distance: center.distance(latitude, longitude),
-              bearing: center.bearing(latitude, longitude),
+              distance: distance([centerLat, centerLng], [latitude, longitude]),
+              bearing: bearing([centerLat, centerLng], [latitude, longitude]),
             };
             return { ...val, queryMetadata } as (GeoQueryDocument & T);
           })
@@ -196,7 +123,7 @@ export class GeoFireCollectionRef<T = any> {
 
   private queryPoint(geohash: string, field: string) {
     const end = geohash + '~';
-    return this.query
+    return (this.ref as fb.firestore.CollectionReference)
       .orderBy(`${field}.geohash`)
       .startAt(geohash)
       .endAt(end);

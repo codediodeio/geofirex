@@ -1,4 +1,16 @@
-import { Point, Feature, FirebaseSDK, Coordinates } from './interfaces';
+import { Point, Feature, Coordinates } from './interfaces';
+
+import turfDistance from '@turf/distance';
+import turfBearing from '@turf/bearing';
+
+
+export function distance(from: Coordinates, to: Coordinates) {
+  return turfDistance(toGeoJSONFeature(from), toGeoJSONFeature(to));
+}
+
+export function bearing(from: Coordinates, to: Coordinates) {
+  return turfBearing(toGeoJSONFeature(from), toGeoJSONFeature(to));
+}
 
 export function toGeoJSONFeature(coordinates: Coordinates, props?: any): Feature<Point> {
   coordinates = flip(coordinates) as Coordinates;

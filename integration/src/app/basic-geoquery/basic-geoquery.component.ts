@@ -22,7 +22,7 @@ export class BasicGeoqueryComponent implements OnInit {
     const radius = 0.5;
     const field = 'pos';
 
-    const collection = this.geo.collection('users', ref =>
+    const collection = this.geo.query('users', ref =>
       ref.where('status', '==', 'single').where('online', '==', true)
     );
   }
