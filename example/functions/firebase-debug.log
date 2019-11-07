@@ -1,0 +1,329 @@
+[debug] [2019-11-07T15:53:18.478Z] ----------------------------------------------------------------------
+[debug] [2019-11-07T15:53:18.479Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-11-07T15:53:18.479Z] CLI Version:   7.5.0
+[debug] [2019-11-07T15:53:18.479Z] Platform:      win32
+[debug] [2019-11-07T15:53:18.480Z] Node Version:  v10.16.0
+[debug] [2019-11-07T15:53:18.480Z] Time:          Thu Nov 07 2019 08:53:18 GMT-0700 (Mountain Standard Time)
+[debug] [2019-11-07T15:53:18.480Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-07T15:53:18.486Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-07T15:53:18.486Z] > authorizing via signed-in user
+[debug] [2019-11-07T15:53:18.486Z] [iam] checking project geo-test-c92e4 for permissions ["firebase.projects.get"]
+[debug] [2019-11-07T15:53:18.487Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/geo-test-c92e4:testIamPermissions  
+
+[debug] [2019-11-07T15:53:18.851Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T15:53:18.852Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/geo-test-c92e4  
+ 
+[debug] [2019-11-07T15:53:19.101Z] <<< HTTP RESPONSE 200
+[warn] !  Your requested "node" version "8" doesn't match your global version "10"
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "C:\Users\jeffd23\apps\geofirex\example\functions" for Cloud Functions...
+[debug] [2019-11-07T15:53:21.894Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T15:53:21.894Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:53:21.896Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:53:21.897Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:53:21.898Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).
+[debug] [2019-11-07T15:53:30.046Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T15:53:30.318Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T15:53:30.319Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:53:30.321Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:53:30.322Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:53:30.322Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:53:30.468Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T15:53:30.468Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T15:53:30.468Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T15:53:30.473Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45912"}
+[debug] [2019-11-07T15:53:30.475Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45912"}
+[debug] [2019-11-07T15:53:30.479Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T15:53:30.480Z] [runtime-status] Ephemeral server survived. {}
+[warn] !  functions: TypeError: geo.query is not a function
+    at exports.testFun.functions.https.onRequest (C:\Users\jeffd23\apps\geofirex\example\functions\index.js:11:21)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:608:20)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:582:19
+    at Generator.next (<anonymous>)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:7:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:3:12)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:575:12)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:607:15
+    at Generator.next (<anonymous>)
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2019-11-07T15:53:47.676Z] File C:\Users\jeffd23\apps\geofirex\example\functions\index.js changed, reloading triggers
+[debug] [2019-11-07T15:53:48.963Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T15:53:48.963Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:53:48.965Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:53:48.967Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:53:48.967Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[info] Shutting down...
+[debug] [2019-11-07T15:53:57.779Z] ----------------------------------------------------------------------
+[debug] [2019-11-07T15:53:57.781Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-11-07T15:53:57.781Z] CLI Version:   7.5.0
+[debug] [2019-11-07T15:53:57.781Z] Platform:      win32
+[debug] [2019-11-07T15:53:57.781Z] Node Version:  v10.16.0
+[debug] [2019-11-07T15:53:57.782Z] Time:          Thu Nov 07 2019 08:53:57 GMT-0700 (Mountain Standard Time)
+[debug] [2019-11-07T15:53:57.782Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-07T15:53:57.787Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-07T15:53:57.787Z] > authorizing via signed-in user
+[debug] [2019-11-07T15:53:57.787Z] [iam] checking project geo-test-c92e4 for permissions ["firebase.projects.get"]
+[debug] [2019-11-07T15:53:57.788Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/geo-test-c92e4:testIamPermissions  
+
+[debug] [2019-11-07T15:53:58.158Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T15:53:58.160Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/geo-test-c92e4  
+ 
+[debug] [2019-11-07T15:53:58.396Z] <<< HTTP RESPONSE 200
+[warn] !  Your requested "node" version "8" doesn't match your global version "10"
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "C:\Users\jeffd23\apps\geofirex\example\functions" for Cloud Functions...
+[debug] [2019-11-07T15:54:01.206Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T15:54:01.206Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:54:01.208Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:54:01.209Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:54:01.210Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).
+[debug] [2019-11-07T15:54:05.094Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T15:54:05.367Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T15:54:05.368Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:54:05.370Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:54:05.371Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:54:05.372Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[debug] [2019-11-07T15:54:05.529Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T15:54:05.529Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T15:54:05.529Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T15:54:05.529Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45068"}
+[debug] [2019-11-07T15:54:05.531Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45068"}
+[debug] [2019-11-07T15:54:05.535Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T15:54:05.536Z] [runtime-status] Ephemeral server survived. {}
+[warn] !  functions: TypeError: geo.query is not a function
+    at exports.testFun.functions.https.onRequest (C:\Users\jeffd23\apps\geofirex\example\functions\index.js:11:21)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:608:20)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:582:19
+    at Generator.next (<anonymous>)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:7:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:3:12)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:575:12)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:607:15
+    at Generator.next (<anonymous>)
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2019-11-07T15:54:58.605Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T15:54:58.884Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T15:54:58.885Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:54:58.887Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:54:58.888Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:54:58.888Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[debug] [2019-11-07T15:54:59.042Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T15:54:59.042Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T15:54:59.042Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T15:54:59.042Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45876"}
+[debug] [2019-11-07T15:54:59.043Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45876"}
+[debug] [2019-11-07T15:54:59.047Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T15:54:59.048Z] [runtime-status] Ephemeral server survived. {}
+[warn] !  functions: TypeError: geo.query is not a function
+    at exports.testFun.functions.https.onRequest (C:\Users\jeffd23\apps\geofirex\example\functions\index.js:11:21)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:608:20)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:582:19
+    at Generator.next (<anonymous>)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:7:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:3:12)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:575:12)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:607:15
+    at Generator.next (<anonymous>)
+[warn] !  Your function was killed because it raised an unhandled error.
+[debug] [2019-11-07T15:55:00.798Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T15:55:01.071Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T15:55:01.072Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:55:01.074Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:55:01.075Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:55:01.076Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[debug] [2019-11-07T15:55:01.228Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T15:55:01.228Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T15:55:01.228Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T15:55:01.228Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45700"}
+[debug] [2019-11-07T15:55:01.229Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\45700"}
+[debug] [2019-11-07T15:55:01.232Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T15:55:01.234Z] [runtime-status] Ephemeral server survived. {}
+[warn] !  functions: TypeError: geo.query is not a function
+    at exports.testFun.functions.https.onRequest (C:\Users\jeffd23\apps\geofirex\example\functions\index.js:11:21)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:608:20)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:582:19
+    at Generator.next (<anonymous>)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:7:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:3:12)
+    at Run (C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:575:12)
+    at C:\Users\jeffd23\AppData\Roaming\nvm\v10.16.0\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:607:15
+    at Generator.next (<anonymous>)
+[warn] !  Your function was killed because it raised an unhandled error.
+[info] Shutting down...
+[debug] [2019-11-07T15:55:22.870Z] ----------------------------------------------------------------------
+[debug] [2019-11-07T15:55:22.872Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-11-07T15:55:22.872Z] CLI Version:   7.5.0
+[debug] [2019-11-07T15:55:22.872Z] Platform:      win32
+[debug] [2019-11-07T15:55:22.872Z] Node Version:  v10.16.0
+[debug] [2019-11-07T15:55:22.873Z] Time:          Thu Nov 07 2019 08:55:22 GMT-0700 (Mountain Standard Time)
+[debug] [2019-11-07T15:55:22.873Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-07T15:55:22.878Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-07T15:55:22.878Z] > authorizing via signed-in user
+[debug] [2019-11-07T15:55:22.879Z] [iam] checking project geo-test-c92e4 for permissions ["firebase.projects.get"]
+[debug] [2019-11-07T15:55:22.880Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/geo-test-c92e4:testIamPermissions  
+
+[debug] [2019-11-07T15:55:23.242Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T15:55:23.243Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/geo-test-c92e4  
+ 
+[debug] [2019-11-07T15:55:23.493Z] <<< HTTP RESPONSE 200
+[warn] !  Your requested "node" version "8" doesn't match your global version "10"
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "C:\Users\jeffd23\apps\geofirex\example\functions" for Cloud Functions...
+[debug] [2019-11-07T15:55:26.304Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T15:55:26.304Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:55:26.306Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:55:26.307Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:55:26.307Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).
+[debug] [2019-11-07T15:55:33.709Z] Accepted request GET /geo-test-c92e4/us-central1/testFun --> testFun
+[debug] [2019-11-07T15:55:33.991Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions","node_version":"10.16.0"}
+[info] i  functions: Beginning execution of "testFun"
+[debug] [2019-11-07T15:55:33.992Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T15:55:33.993Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T15:55:33.995Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T15:55:33.995Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[debug] [2019-11-07T15:55:34.155Z] [runtime-status] Trigger "testFun" has been found, beginning invocation! {}
+[debug] [2019-11-07T15:55:34.155Z] [runtime-status]  {"httpsTrigger":{},"name":"testFun","entryPoint":"testFun"}
+[debug] [2019-11-07T15:55:34.155Z] [runtime-status] Running testFun in mode HTTPS {}
+[debug] [2019-11-07T15:55:34.155Z] {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\38484"}
+[debug] [2019-11-07T15:55:34.157Z] [functions] Runtime ready! Sending request! {"socketPath":"\\\\?\\pipe\\C:\\Users\\jeffd23\\apps\\geofirex\\example\\functions\\38484"}
+[debug] [2019-11-07T15:55:34.161Z] [runtime-status] Ephemeral server used! {}
+[info] >  [object Object]
+[debug] [2019-11-07T15:55:34.332Z] [runtime-status] Ephemeral server survived. {}
+[info] i  functions: Finished "testFun" in ~1s

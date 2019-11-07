@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, interval } from 'rxjs';
-import { switchMap, tap, map, take, finalize } from 'rxjs/operators';
+import { Observable, interval } from 'rxjs';
+import { tap, map, take, finalize } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import * as geofirex from 'geofirex';
-import { GeoFireCollectionRef } from 'geofirex';
-import { Point, Feature } from 'geojson';
+import { GeoFireQuery } from 'geofirex';
 
 @Component({
   selector: 'app-realtime-geoquery',
@@ -13,13 +12,13 @@ import { Point, Feature } from 'geojson';
 })
 export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
   geo = geofirex.init(firebase);
-  points: Observable<any>;
+  points: Observable<any[]>;
   testDoc;
 
   path: 'positions';
-  collection;
-  geoCollection;
-  clicked;
+  collection: firebase.firestore.CollectionReference;
+  geoQuery: GeoFireQuery;
+  clicked = false;
   docId = 'testPoint' + Date.now();
 
   constructor() {
@@ -30,21 +29,14 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.geoCollection = this.geo.query('positions');
+    this.geoQuery = this.geo.query('positions');
     const center = this.geo.point(34, -113);
 
-    this.points = this.geoCollection.within(center, 200, 'pos');
+    this.points = this.geoQuery.within(center, 200, 'pos');
     this.testDoc = this.points.pipe(
       map(arr => arr.find(o => o.id === this.docId))
     );
 
-    // this.testDoc.subscribe(x => {
-    //   if (x && x.pos.geopoint.latitude === 32.9) {
-    //     this.clicked = false;
-    //   } else {
-    //     this.clicked = true;
-    //   }
-    // });
   }
 
   start() {

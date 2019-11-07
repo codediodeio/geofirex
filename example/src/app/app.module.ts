@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { AgmCoreModule } from '@agm/core';
-import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 
 import { BasicGeoqueryComponent } from './basic-geoquery/basic-geoquery.component';
 import { RealtimeGeoqueryComponent } from './realtime-geoquery/realtime-geoquery.component';
@@ -33,7 +32,6 @@ export const config = {
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBTyQHGGFTooUvfR0_PpfVx8TI8Q7K-0HA'
     }),
-    // AgmSnazzyInfoWindowModule,
     AngularFireModule.initializeApp(config),
     AngularFirestoreModule
   ],

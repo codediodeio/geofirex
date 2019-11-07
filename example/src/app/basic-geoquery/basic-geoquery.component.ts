@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject, interval } from 'rxjs';
-import { switchMap, share, shareReplay, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { switchMap, shareReplay } from 'rxjs/operators';
 import * as firebaseApp from 'firebase/app';
 import * as geofirex from 'geofirex';
 
@@ -23,15 +23,10 @@ export class BasicGeoqueryComponent implements OnInit {
 
     this.points = this.radius.pipe(
       switchMap(r => {
-        console.log('new rad');
         return this.geo.query('bearings').within(center, r, field, { log: true });
       }),
       shareReplay(1)
     );
-
-    // this.radius.pipe(
-    //   switchMap(v => interval(500).pipe(tap(console.log)) )
-    // ).subscribe()
   }
 
   update(v) {
