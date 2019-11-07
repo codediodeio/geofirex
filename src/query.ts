@@ -10,7 +10,7 @@ import {
 } from 'rxjs/operators';
 
 import { FeatureCollection, Geometry } from './interfaces';
-import { neighbors, toGeoJSONFeature, distance, bearing, setPrecsion } from './util';
+import { neighbors, toGeoJSONFeature, distance, bearing, setPrecision } from './util';
 
 import * as fb from 'firebase/app';
 import { FirebaseSDK } from './interfaces';
@@ -61,7 +61,7 @@ export class GeoFireQuery<T = any> {
   ): Observable<(GeoQueryDocument & T)[]> {
     opts = { ...defaultOpts, ...opts };
     const tick = Date.now();
-    const precision = setPrecsion(radius);
+    const precision = setPrecision(radius);
     const radiusBuffer = radius * 1.02; // buffer for edge distances
     const centerHash = center.geohash.substr(0, precision);
     const area = neighbors(centerHash).concat(centerHash);

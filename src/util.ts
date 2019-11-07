@@ -29,7 +29,7 @@ export function flip(arr) {
   return [arr[1], arr[0]];
 }
 
-export function setPrecsion(km: number): number {
+export function setPrecision(km: number): number {
   switch (true) {
     case km <= 0.00477:
       return 9;
