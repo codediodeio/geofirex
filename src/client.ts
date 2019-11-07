@@ -1,39 +1,72 @@
-import { firestore } from './interfaces';
+import { FirebaseSDK } from './interfaces';
 
-import { GeoFireCollectionRef, QueryFn, get } from './collection';
-import { GeoFirePoint } from './point';
+import { GeoFireQuery } from './query';
+import { encode, distance, bearing } from './util';
+
+import * as fb from 'firebase/app';
+
+export interface FirePoint {
+  geopoint: fb.firestore.GeoPoint,
+  geohash: string
+}
 
 export class GeoFireClient {
-  constructor(private app: firestore.FirebaseApp) {}
+  constructor(public app: FirebaseSDK) {}
   /**
-   * Creates reference to a Firestore collection that can be used to make geo-queries and perform writes
-   * If you pass a query, any subsequent geo-queries will be limited to this subset of documents
-   * @param  {string} path path to collection
-   * @param  {QueryFn} query? Firestore query id ref => ref.orderBy('foo').limit(5)
-   * @returns {GeoFireCollectionRef}
+   * Creates reference to a Firestore collection that can be used to make geoqueries
+   * @param  {firestore.CollectionReference | firestore.Query | string} ref path to collection
+   * @returns {GeoFireQuery}
    */
-  collection<T>(path: string, query?: QueryFn): GeoFireCollectionRef<T> {
-    return new GeoFireCollectionRef(this.app, path, query);
+  query<T>(ref): GeoFireQuery<T> {
+    return new GeoFireQuery(this.app, ref);
   }
+
   /**
-   * A GeoFirePoint allows you to create geohashes, format data, and calculate relative distance/bearing.
+   * Creates an object with a geohash. Save it to a field in Firestore to make geoqueries. 
    * @param  {number} latitude
    * @param  {number} longitude
-   * @returns {GeoFirePoint}
+   * @returns FirePoint
    */
-  point(latitude: number, longitude: number): GeoFirePoint {
-    return new GeoFirePoint(this.app, latitude, longitude);
+  point(latitude: number, longitude: number): FirePoint {
+    return {
+      geopoint: new (this.app as any).firestore.GeoPoint(
+        latitude,
+        longitude
+      ) as fb.firestore.GeoPoint,
+      geohash: encode(latitude, longitude, 9)
+    }
   }
-}
+  /**
+   * Haversine distance between points
+   * @param  {FirePoint} from
+   * @param  {FirePoint} to
+   * @returns number
+   */
+  distance(from: FirePoint, to: FirePoint): number {
+      return distance(
+        [from.geopoint.latitude, from.geopoint.longitude],
+        [to.geopoint.latitude, to.geopoint.longitude]
+      )
+    }
+
+  /**
+   * Haversine bearing between points
+   * @param  {FirePoint} from
+   * @param  {FirePoint} to
+   * @returns number
+   */
+  bearing(from: FirePoint, to: FirePoint): number {
+      return bearing(
+        [from.geopoint.latitude, from.geopoint.longitude],
+        [to.geopoint.latitude, to.geopoint.longitude]
+      )
+    }
+  }
 /**
  * Initialize the library by passing it your Firebase app
  * @param  {firestore.FirebaseApp} app
  * @returns GeoFireClient
  */
-export function init(app: firestore.FirebaseApp): GeoFireClient {
-  // Bug Fix for #13 Geopoint was moved from app.firestore to app._firebase_.firestore.GeoPoint?
-  if (typeof(app.firestore.GeoPoint) === 'undefined' && app.firebase_ && app.firebase_.firestore && app.firebase_.firestore.GeoPoint) {
-    app.firestore.GeoPoint = app.firebase_.firestore.GeoPoint;
-  }
+export function init(app: FirebaseSDK): GeoFireClient {
   return new GeoFireClient(app);
 }

@@ -1,16 +1,16 @@
 import resolve from 'rollup-plugin-node-resolve';
 import cjs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
-import { plugin as analyze } from 'rollup-plugin-analyzer'
-const sizes = require("rollup-plugin-sizes");
 import pkg from './package.json'
-import uglify from 'rollup-plugin-uglify';
+// import uglify from 'rollup-plugin-uglify';
+
+import bundleSize from 'rollup-plugin-bundle-size';
 
 const globals = {
     rxjs: 'rxjs',
     'rxjs/operators': 'rxjs.operators',
 }
-const external = ['firebase/app', 'rxjs', 'rxjs/operators']
+const external = ['firebase/app', 'rxjs', 'rxjs/operators', 'firebase']
 
 export default {
     input: './src/index.ts',
@@ -18,6 +18,7 @@ export default {
             file: pkg.main,
             format: 'cjs',
             name: 'gfx',
+
         },
         {
             file: pkg.module,
@@ -28,13 +29,11 @@ export default {
     ],
     external,
     plugins: [
-        typescript({
-            // typescript: require('typescript')
-        }),
+        typescript(),
         resolve({
             only: [/^@turf\/.*$/]
         }),
         cjs(),
-        sizes()
+        bundleSize()
     ]
 };

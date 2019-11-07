@@ -24,7 +24,7 @@
 //   const lngRng = { min: -114, max: -112 };
 //   for (const i in Array(10).fill(1)) {
 //     const pos = new GeoHash(chance.latitude(latRng), chance.longitude(lngRng))
-//       .data;
+//       .data();
 //     const data = {
 //       name: chance.name(),
 //       pos
@@ -47,7 +47,7 @@
 //         .geometry.coordinates;
 //       const point = new GeoHash(coords[1], coords[0]);
 //       const name = `${i}_distance-${b}_bearing`;
-//       // ref.addAt(name, { pos: point.data });
+//       // ref.addAt(name, { pos: point.data() });
 //     }
 //   }
 // }
@@ -55,6 +55,6 @@
 // export async function seedOne(gfx: GeoFireClient) {
 //     const col = gfx.collection('compound');
 //     const point = gfx.point(38, -119);
-//     await col.setDoc(`foo${Date.now()}`, { point: point.data, color: 'blue' });
+//     await col.setDoc(`foo${Date.now()}`, { point: point.data(), color: 'blue' });
 //     console.log('foo');
 //   }

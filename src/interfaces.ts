@@ -1,49 +1,15 @@
-import * as types from '@firebase/firestore-types';
+import * as fb from 'firebase/app';
 
-export namespace firestore {
-  export interface CollectionReference extends types.CollectionReference {}
-  export interface Query extends types.Query {}
-  export interface QuerySnapshot extends types.QuerySnapshot {}
-  export interface GeoPoint extends types.GeoPoint {}
-  export interface DocumentReference extends types.DocumentReference {}
-  export interface Firestore extends types.FirebaseFirestore {}
-  //   export interface FirebaseNamespace {
-  //     firestore?: {
-  //       (app?: FirebaseApp): types.FirebaseFirestore;
-  //       Blob: typeof types.Blob;
-  //       CollectionReference: typeof types.CollectionReference;
-  //       DocumentReference: typeof types.DocumentReference;
-  //       DocumentSnapshot: typeof types.DocumentSnapshot;
-  //       FieldPath: typeof types.FieldPath;
-  //       FieldValue: typeof types.FieldValue;
-  //       Firestore: typeof types.FirebaseFirestore;
-  //       GeoPoint: typeof types.GeoPoint;
-  //       Query: typeof types.Query;
-  //       QuerySnapshot: typeof types.QuerySnapshot;
-  //       Timestamp: typeof types.Timestamp;
-  //       Transaction: typeof types.Transaction;
-  //       WriteBatch: typeof types.WriteBatch;
-  //       setLogLevel: typeof types.setLogLevel;
-  //     };
-  //   }
-  export interface FirebaseApp {
-    firestore?(): types.FirebaseFirestore;
-  }
-}
+/**
+ * Represents Firebase JS (Web) or Firebase Admin (Node)
+ * Web ES6 example: import firebase from 'firebase/app'
+ * Cloud Functions example: const admin = require('firebase-amdin')
+ */
+export type FirebaseSDK = typeof fb;
 
-/// GEOJSON
-
-// Type definitions for geojson 7946.0
-// Project: https://geojson.org/
-// Definitions by: Jacob Bruun <https://github.com/cobster>
-//                 Arne Schubert <https://github.com/atd-schubert>
-//                 Jeff Jacobson <https://github.com/JeffJacobson>
-//                 Ilia Choly <https://github.com/icholy>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
-
-// Note: as of the RFC 7946 version of GeoJSON, Coordinate Reference Systems
-// are no longer supported. (See https://tools.ietf.org/html/rfc7946#appendix-B)}
+export type Latitude = number;
+export type Longitude = number;
+export type Coordinates = [Latitude, Longitude];
 
 /**
  * The valid values for the "type" property of GeoJSON geometry objects.

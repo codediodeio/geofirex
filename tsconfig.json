@@ -4,15 +4,17 @@
     "declaration": true,
     "importHelpers": true,
     "outDir": "dist",
-    "lib": ["es2015", "dom"],
+    "lib": ["esnext", "dom"],
     "moduleResolution": "node",
     "noImplicitAny": false,
     "sourceMap": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "module": "es2015",
     "target": "es5",
-    "typeRoots": ["../node_modules/@types"]
+    // "typeRoots": ["../node_modules/@types"],
+    "types": ["jest", "node"]
   },
   "include": ["src"],
-  "exclude": ["dist/**/*", "spec/**/*"]
+  "exclude": ["dist/**/*", "spec/**/*", "integration/**/*", "example/**/*"]
 }

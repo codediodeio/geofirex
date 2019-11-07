@@ -1,6 +1,6 @@
 {
     "name": "geofirex",
-    "version": "0.0.6",
+    "version": "0.1.0",
     "description": "Realtime Firestore GeoQueries with RxJS",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.js",
@@ -14,12 +14,11 @@
         "url": "https://github.com/codediodeio/geofirex.git"
     },
     "scripts": {
-        "test": "jest --coverage --forceExit",
+        "test": "jest --coverage --forceExit --runInBand",
         "test:watch": "jest --watchAll",
         "build": "rollup -c",
         "dev": "rollup -c -w",
-        "publish": "",
-        "doc": "typedoc --out dochtml src --excludeExternals --excludePrivate --mode file --theme markdown --mdEngine github"
+        "publish": ""
     },
     "keywords": [
         "rxjs",
@@ -32,8 +31,8 @@
     "author": "Jeff Delaney",
     "license": "ISC",
     "peerDependencies": {
-        "rxjs": "^6.2.1",
-        "firebase": "^5.2.0"
+        "firebase": "^7.2.0",
+        "rxjs": "^6.2.1"
     },
     "devDependencies": {
         "@firebase/firestore-types": "^0.4.3",
@@ -43,44 +42,28 @@
         "@types/chance": "^1.0.1",
         "@types/faker": "^4.1.2",
         "@types/geojson": "^7946.0.4",
-        "@types/jest": "^23.1.4",
+        "@types/jest": "^23.3.14",
         "@types/lodash": "^4.14.110",
         "@types/ngeohash": "^0.6.1",
         "@types/turf": "^3.5.32",
-        "chance": "^1.0.16",
-        "faker": "^4.1.0",
-        "firebase": "^5.4.1",
-        "jest": "^23.3.0",
+        "firebase": "^7.2.3",
+        "jest": "^24.9.0",
         "lodash": "^4.17.10",
-        "rollup": "0.57.1",
+        "rollup": "^1.26.3",
         "rollup-plugin-analyzer": "^2.0.4",
+        "rollup-plugin-bundle-size": "^1.0.3",
         "rollup-plugin-commonjs": "9.1.0",
         "rollup-plugin-node-resolve": "3.3.0",
         "rollup-plugin-sizes": "^0.4.2",
         "rollup-plugin-typescript2": "0.12.0",
         "rollup-plugin-uglify": "^3.0.0",
         "rxjs": "^6.2.1",
-        "rxjs-compat": "^6.2.1",
-        "ts-jest": "^23.0.0",
-        "ts-loader": "3.5.0",
-        "ts-node": "5.0.1",
+        "ts-jest": "^24.1.0",
+        "ts-lint": "^4.5.1",
+        "ts-loader": "^6.2.1",
+        "ts-node": "^8.4.1",
+        "tslib": "^1.10.0",
         "tslint": "5.9.1",
-        "typedoc": "^0.11.1",
-        "typedoc-plugin-markdown": "^1.1.13",
-        "typescript": "2.8.1"
-    },
-    "jest": {
-        "transform": {
-            "^.+\\.tsx?$": "ts-jest"
-        },
-        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-        "moduleFileExtensions": [
-            "ts",
-            "tsx",
-            "js",
-            "jsx",
-            "json",
-            "node"
-        ]
+        "typescript": "^3.7.2"
     }
 }
