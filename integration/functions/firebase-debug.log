@@ -383,3 +383,52 @@
 [info] >  [object Object]
 [debug] [2019-11-06T20:11:52.027Z] [runtime-status] Ephemeral server survived. {}
 [info] i  functions: Finished "testFun" in ~1s
+[info] Shutting down...
+[debug] [2019-11-07T04:01:12.571Z] ----------------------------------------------------------------------
+[debug] [2019-11-07T04:01:12.573Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-11-07T04:01:12.573Z] CLI Version:   7.5.0
+[debug] [2019-11-07T04:01:12.573Z] Platform:      win32
+[debug] [2019-11-07T04:01:12.573Z] Node Version:  v10.16.0
+[debug] [2019-11-07T04:01:12.574Z] Time:          Wed Nov 06 2019 21:01:12 GMT-0700 (Mountain Standard Time)
+[debug] [2019-11-07T04:01:12.574Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-07T04:01:12.600Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-07T04:01:12.600Z] > authorizing via signed-in user
+[debug] [2019-11-07T04:01:12.600Z] [iam] checking project geo-test-c92e4 for permissions ["firebase.projects.get"]
+[debug] [2019-11-07T04:01:12.601Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-11-07T04:01:12.602Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-11-07T04:01:12.847Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T04:01:12.856Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/geo-test-c92e4:testIamPermissions  
+
+[debug] [2019-11-07T04:01:13.276Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-07T04:01:13.279Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/geo-test-c92e4  
+ 
+[debug] [2019-11-07T04:01:13.580Z] <<< HTTP RESPONSE 200
+[warn] !  Your functions directory does not specify a Node version.
+   - Learn more at https://firebase.google.com/docs/functions/manage-functions#set_runtime_options
+[info] +  functions: Emulator started at http://localhost:5000
+[info] i  functions: Watching "C:\Users\jeffd23\apps\geofirex\integration\functions" for Cloud Functions...
+[debug] [2019-11-07T04:01:16.402Z] [runtime-status] Functions runtime initialized. {"cwd":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions","node_version":"10.16.0"}
+[debug] [2019-11-07T04:01:16.403Z] [runtime-status] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true} {}
+[debug] [2019-11-07T04:01:16.408Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.7.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2019-11-07T04:01:16.414Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2019-11-07T04:01:16.415Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.3.0","resolution":"C:\\Users\\jeffd23\\apps\\geofirex\\integration\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] >  GeoFireClient {
+[info] >    app:
+[info] >     FirebaseNamespace {
+[info] >       __esModule: true,
+[info] >       credential:
+[info] >        { cert: [Function: cert],
+[info] >          refreshToken: [Function: refreshToken],
+[info] >          applicationDefault: [Function: applicationDefault] },
+[info] >       SDK_VERSION: '8.7.0',
+[info] >       Promise: [Function: Promise],
+[info] >       INTERNAL:
+[info] >        FirebaseNamespaceInternals {
+[info] >          firebase_: [Circular],
+[info] >          serviceFactories: {},
+[info] >          apps_: [Object],
+[info] >          appHooks_: {} },
+[info] >       default: [Circular] } }
+[info] +  functions[testFun]: http function initialized (http://localhost:5000/geo-test-c92e4/us-central1/testFun).

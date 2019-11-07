@@ -35,7 +35,7 @@ export const config = {
     }),
     AgmSnazzyInfoWindowModule,
     AngularFireModule.initializeApp(config),
-    AngularFirestoreModule
+    AngularFirestoreModule.enablePersistence()
   ],
   providers: [],
   bootstrap: [AppComponent]

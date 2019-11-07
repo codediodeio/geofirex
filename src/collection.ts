@@ -1,7 +1,7 @@
 // import { firestore } from './interfaces';
 
-import { Observable, combineLatest } from 'rxjs';
-import { shareReplay, map, first } from 'rxjs/operators';
+import { Observable, combineLatest, Subject } from 'rxjs';
+import { shareReplay, map, first, tap, finalize, takeUntil } from 'rxjs/operators';
 import { GeoFirePoint } from './point';
 import { setPrecsion } from './util';
 import { FeatureCollection, Geometry } from 'geojson';
@@ -13,9 +13,10 @@ import { FirebaseSDK } from './interfaces';
 export type QueryFn = (ref: fb.firestore.CollectionReference) => fb.firestore.Query;
 
 export interface GeoQueryOptions {
-  units: 'km'
+  units?: 'km',
+  log?: boolean
 }
-const defaultOpts: GeoQueryOptions = { units: 'km' };
+const defaultOpts: GeoQueryOptions = { units: 'km', log: false };
 
 export interface QueryMetadata {
   bearing: number;
@@ -124,41 +125,70 @@ export class GeoFireCollectionRef<T = any> {
     center: GeoFirePoint,
     radius: number,
     field: string,
-    opts = defaultOpts
+    opts?: GeoQueryOptions
   ): Observable<(GeoQueryDocument & T)[]> {
+    opts = { ...defaultOpts, ...opts }
     const precision = setPrecsion(radius);
     const radiusBuffer = radius * 1.02; // buffer for edge distances
     const centerHash = center.hash().substr(0, precision);
     const area = neighbors(centerHash).concat(centerHash);
 
+    // Used to cancel the individual geohash subscriptions
+    const complete = new Subject();
+
+    // Map geohash neighbors to individual queries
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
-      return createStream(query).pipe(snapToData());
+      return createStream(query).pipe(
+        snapToData(),
+        takeUntil(complete),
+      );
     });
+
+    const tick = Date.now();
+
+
 
     const combo = combineLatest(...queries).pipe(
       map(arr => {
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
-        return reduced
+        
+        const filtered = reduced
           .filter(val => {
-            const lat = val[field].geopoint.latitude;
-            const lng = val[field].geopoint.longitude;
-            return center.distance(lat, lng) <= radiusBuffer;
+
+            const { latitude, longitude } = val[field].geopoint;
+            return center.distance(latitude, longitude) <= radiusBuffer;
           })
 
-          .map(val => {
-            const lat = val[field].geopoint.latitude;
-            const lng = val[field].geopoint.longitude;
+          if (opts.log) { 
+            console.group('GeoFireX Query');
+            console.log('💡 Logs update on every change to the query');
+            console.log(`🌐 Center ${center.coords()}. Radius ${radius}`)
+            // const cached = reduced.reduce((a, c) => a + (c.fromCache ? 1 : 0), 0);
+            console.log(`📍 Hits: ${reduced.length}.`) //Cached ${cached}
+            console.log(`⌚ Elapsed time: ${Date.now() - tick}ms`);
+            console.log(`🟢 Within Radius: ${filtered.length}`);
+            console.groupEnd();
+          }
+
+          return filtered.map(val => {
+
+            const { latitude, longitude } = val[field].geopoint;
+            
             const queryMetadata = {
-              distance: center.distance(lat, lng),
-              bearing: center.bearing(lat, lng)
+              distance: center.distance(latitude, longitude),
+              bearing: center.bearing(latitude, longitude),
             };
             return { ...val, queryMetadata } as (GeoQueryDocument & T);
           })
 
           .sort((a, b) => a.queryMetadata.distance - b.queryMetadata.distance);
       }),
-      shareReplay(1)
+      shareReplay(1),
+      finalize(() => { 
+        opts.log && console.log('✋ Query complete');
+        complete.next(true)
+      })
     );
 
     return combo;
@@ -184,14 +214,16 @@ export class GeoFireCollectionRef<T = any> {
   // findFirst() {
   //   return 'not implemented';
   // }
+
 }
+
 
 function snapToData(id = 'id') {
   return map((querySnapshot: fb.firestore.QuerySnapshot) =>
     querySnapshot.docs.map(v => {
       return {
         ...(id ? { [id]: v.id } : null),
-        ...v.data()
+        ...v.data(),
       };
     })
   );
@@ -202,9 +234,13 @@ internal, do not use
  */
 function createStream(input): Observable<any> {
   return new Observable(observer => {
-    const unsubscribe = input.onSnapshot((val) => observer.next(val), err => observer.error(err));
+    const unsubscribe = input.onSnapshot(
+       (val) => observer.next(val), 
+       err => observer.error(err),
+      );
     return { unsubscribe };
   });
+  // return bindCallback(input.onSnapshot.bind(input.onSnapshot))();
 }
 /**
  * RxJS operator that converts a collection to a GeoJSON FeatureCollection

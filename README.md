@@ -48,18 +48,13 @@ const geo = require('geofirex').init(admin);
 With Typescript:
 
 ```ts
-// Init Firebase
-import * as firebase from 'firebase/app'; 
-firebase.initializeApp(yourConfig);
-
-// Init GeoFireX
 import * as geofirex from 'geofirex'; 
 const geo = geofirex.init(firebase);
 ```
 
 ### Write Geo Data
 
-Next, add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geolocation tools. The `point` method returns a class that helps you create geolocation data.
+Next, add some geolocation data in your database. A `collection` creates a reference to Firestore (just like the SDK), but with some extra geolocation tools. The `point` method returns a class 
 
 ```ts
 const cities = geo.collection('cities');
@@ -142,7 +137,9 @@ Returns a GeoFirePoint allowing you to create geohashes, format data, and calcul
 
 Example: `const point = geo.point(38, -119)`
 
-#### Getters
+#### Get Data
+
+A point can return data in a variety of formats. 
 
 - `point.hash()` Returns a geohash string at precision 9
 - `point.geoPoint()` Returns a Firestore GeoPoint
@@ -158,6 +155,11 @@ Example: `const point = geo.point(38, -119)`
 ## :pizza: Additional Features
 
 The goal of this package is to facilitate rapid feature development with tools like MapBox, Google Maps, and D3.js. If you have an idea for a useful feature, open an issue.
+
+### Logging
+
+
+![Logging GeoQueries](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/geofirex-logging.PNG?alt=media&token=9b8b487d-18b2-4e5f-bb04-564fa6f2996d)
 
 ### `toGeoJSON` Operator
 
