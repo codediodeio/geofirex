@@ -12,8 +12,6 @@ exports.testFun = functions.https.onRequest((req, res) => {
     const point = geo.point(40.5, -80.0);
     const query = ref.within(point, 10, 'pos');
 
-    ref.f
-
     query.subscribe(v => {
         res.send({ len: v.length, v })
     })
