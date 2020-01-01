@@ -50,7 +50,7 @@
         "jest": "^24.9.0",
         "lodash": "^4.17.10",
         "rollup": "^1.26.3",
-        "rollup-plugin-analyzer": "^2.0.4",
+        "rollup-plugin-analyzer": "^3.2.2",
         "rollup-plugin-bundle-size": "^1.0.3",
         "rollup-plugin-commonjs": "9.1.0",
         "rollup-plugin-node-resolve": "3.3.0",
