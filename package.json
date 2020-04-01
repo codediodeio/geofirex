@@ -42,7 +42,7 @@
         "@types/chance": "^1.0.1",
         "@types/faker": "^4.1.2",
         "@types/geojson": "^7946.0.4",
-        "@types/jest": "^23.3.14",
+        "@types/jest": "^25.1.4",
         "@types/lodash": "^4.14.110",
         "@types/ngeohash": "^0.6.1",
         "@types/turf": "^3.5.32",
