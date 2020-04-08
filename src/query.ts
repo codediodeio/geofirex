@@ -23,6 +23,7 @@ export type QueryFn = (
 export interface GeoQueryOptions {
   units?: 'km';
   log?: boolean;
+  source?: 'default' | 'server' | 'cache';
 }
 const defaultOpts: GeoQueryOptions = { units: 'km', log: false };
 
@@ -75,6 +76,15 @@ export class GeoFireQuery<T = any> {
     const queries = area.map(hash => {
       const query = this.queryPoint(hash, field);
       return createStream(query).pipe(
+        operators.filter(s => {
+          if (opts.source === 'server') {
+            return !s.metadata.fromCache;
+          } else if (opts.source === 'cache') {
+            return s.metadata.fromCache;
+          }
+          return true;
+        })
+      ).pipe(
         snapToData(),
         takeUntil(complete)
       );
@@ -169,6 +179,7 @@ internal, do not use. Converts callback to Observable.
 function createStream(input): Observable<any> {
   return new Observable(observer => {
     const unsubscribe = input.onSnapshot(
+      { includeMetadataChanges: true },
       val => observer.next(val),
       err => observer.error(err)
     );
