@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, interval } from 'rxjs';
 import { tap, map, take, finalize } from 'rxjs/operators';
-import * as firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import * as geofirex from 'geofirex';
 import { GeoFireQuery } from 'geofirex';
 

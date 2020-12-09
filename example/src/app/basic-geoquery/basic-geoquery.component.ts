@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, shareReplay } from 'rxjs/operators';
-import * as firebaseApp from 'firebase/app';
+import firebase from 'firebase/app';
 import * as geofirex from 'geofirex';
 
 @Component({
@@ -10,7 +10,7 @@ import * as geofirex from 'geofirex';
   styleUrls: ['./basic-geoquery.component.scss']
 })
 export class BasicGeoqueryComponent implements OnInit {
-  geo = geofirex.init(firebaseApp);
+  geo = geofirex.init(firebase);
   points: Observable<any>;
 
   radius = new BehaviorSubject(0.5);

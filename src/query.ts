@@ -12,13 +12,13 @@ import {
 import { FeatureCollection, Geometry } from './interfaces';
 import { neighbors, toGeoJSONFeature, distance, bearing, setPrecision } from './util';
 
-import * as fb from 'firebase/app';
+import firebase from 'firebase/app';
 import { FirebaseSDK } from './interfaces';
 import { FirePoint } from './client';
 
 export type QueryFn = (
-  ref: fb.firestore.CollectionReference
-) => fb.firestore.Query;
+  ref: firebase.firestore.CollectionReference
+) => firebase.firestore.Query;
 
 export interface GeoQueryOptions {
   units?: 'km';
@@ -38,7 +38,7 @@ export interface GeoQueryDocument {
 export class GeoFireQuery<T = any> {
   constructor(
     private app: FirebaseSDK,
-    private ref?: fb.firestore.CollectionReference | fb.firestore.Query | string
+    private ref?: firebase.firestore.CollectionReference | firebase.firestore.Query | string
   ) {
     if (typeof ref === 'string') {
       this.ref = this.app.firestore().collection(ref);
@@ -132,7 +132,7 @@ export class GeoFireQuery<T = any> {
 
   private queryPoint(geohash: string, field: string) {
     const end = geohash + '~';
-    return (this.ref as fb.firestore.CollectionReference)
+    return (this.ref as firebase.firestore.CollectionReference)
       .orderBy(`${field}.geohash`)
       .startAt(geohash)
       .endAt(end);
@@ -153,7 +153,7 @@ export class GeoFireQuery<T = any> {
 }
 
 function snapToData(id = 'id') {
-  return map((querySnapshot: fb.firestore.QuerySnapshot) =>
+  return map((querySnapshot: firebase.firestore.QuerySnapshot) =>
     querySnapshot.docs.map(v => {
       return {
         ...(id ? { [id]: v.id } : null),

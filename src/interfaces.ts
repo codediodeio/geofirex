@@ -1,11 +1,11 @@
-import * as fb from 'firebase/app';
+import firebase from 'firebase/app';
 
 /**
  * Represents Firebase JS (Web) or Firebase Admin (Node)
  * Web ES6 example: import firebase from 'firebase/app'
  * Cloud Functions example: const admin = require('firebase-amdin')
  */
-export type FirebaseSDK = typeof fb;
+export type FirebaseSDK = typeof firebase;
 
 export type Latitude = number;
 export type Longitude = number;
