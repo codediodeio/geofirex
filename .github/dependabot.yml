@@ -1,0 +1,29 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "12:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: rollup
+    versions:
+    - 2.35.1
+    - 2.38.3
+  - dependency-name: "@types/faker"
+    versions:
+    - 5.1.5
+    - 5.1.6
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+  - dependency-name: "@types/jest"
+    versions:
+    - 26.0.19
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
