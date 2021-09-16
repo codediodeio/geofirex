@@ -147,7 +147,7 @@ export class GeoFireQuery<T = any> {
     radius: number,
     field: string,
     opts?: GeoQueryOptions
-  ): Observable<(GeoQueryDocument & T)[]> {
+  ): Observable<any[]> {
     opts = { ...defaultOpts, ...opts };
     const tick = Date.now();
     const precision = setPrecision(radius);
@@ -162,7 +162,7 @@ export class GeoFireQuery<T = any> {
 
     // Map geohash neighbors to individual queries
     const queries = area.map((hash) => {
-      const query = this.queryPoint(hash, field);
+      const query = this.queryPoint(hash, field, opts.category);
       return createStream(query).pipe(snapToData(), takeUntil(complete));
     });
 
@@ -201,7 +201,7 @@ export class GeoFireQuery<T = any> {
               distance: distance([centerLat, centerLng], [latitude, longitude]),
               bearing: bearing([centerLat, centerLng], [latitude, longitude]),
             };
-            return { ...val, hitMetadata } as GeoQueryDocument & T;
+            return { ...val, hitMetadata };
           })
 
           .sort((a, b) => a.hitMetadata.distance - b.hitMetadata.distance);
@@ -218,14 +218,14 @@ export class GeoFireQuery<T = any> {
 
   private queryPoint(geohash: string, field: string, category: string = null) {
     const end = geohash + "~";
-    if (category === null) {
+    if (category) {
       return (this.ref as fb.firestore.CollectionReference)
+        .where(`categories`, "array-contains", category)
         .orderBy(`${field}.geohash`)
         .startAt(geohash)
         .endAt(end);
     } else {
       return (this.ref as fb.firestore.CollectionReference)
-        .where(`categories`, "array-contains", category)
         .orderBy(`${field}.geohash`)
         .startAt(geohash)
         .endAt(end);
