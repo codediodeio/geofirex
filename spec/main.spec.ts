@@ -6,13 +6,15 @@ import { config, mockResponse } from './util';
 import * as _ from 'lodash';
 import 'jest';
 
-import { GeoFireQuery, toGeoJSON, get } from '../src/query';
+import { GeoFireQuery, toGeoJSON, get, GeoQueryDocument } from '../src/query';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
 
 import { neighbors, distance, bearing } from '../src/util';
 
 import { GeoFireClient, FirePoint } from '../src/client';
+
+const COLLECTION_BEARINGS = 'bearings';
 
 describe('GeoFireX', () => {
   let gfx: GeoFireClient;
@@ -50,13 +52,13 @@ describe('GeoFireX', () => {
     });
 
     test('should calculate distance', () => {
-      const p = gfx.point(40.5, -80.0);
+      const p: FirePoint = gfx.point(40.5, -80.0);
       expect(gfx.distance(p, gfx.point(40.49100679636276, -80))).toBeCloseTo(1.0);
       expect(gfx.distance(p, gfx.point(-20, 30) )).toBeCloseTo(13099.698);
     });
 
     test('should calculate bearing', () => {
-      const p = gfx.point(40.5, -80.0);
+      const p: FirePoint = gfx.point(40.5, -80.0);
       expect(gfx.bearing(p, gfx.point(42, -80))).toBeCloseTo(0);
       expect(gfx.bearing(p, gfx.point(40, -80))).toBeCloseTo(180);
       expect(gfx.bearing(p, gfx.point(40.5, -80.005))).toBeCloseTo(-90);
@@ -64,57 +66,58 @@ describe('GeoFireX', () => {
   });
 
   describe('within(...) queries', () => {
-    let ref: GeoFireQuery;
+    let ref: GeoFireQuery<any>;
     let center: FirePoint;
-    let dbRef
+
     beforeEach(() => {
-      // dbRef
-      ref = gfx.query('bearings');
+      ref = gfx.query(COLLECTION_BEARINGS);
       center = gfx.point(40.5, -80.0);
     });
 
-    test('work with compound Firestore queries', async done => {
-      const radius = 50;
-      const dbRef = firebase.firestore().collection('compound').where('color', '==', 'blue')
-      const point = gfx.point(38, -119);
-      const query = gfx.query(dbRef).within(point, radius, 'point');
+    test('remove test point from db', (done: jest.DoneCallback) => {
+      const dbRef = firebase.firestore().collection(COLLECTION_BEARINGS).doc('testPoint');
+      dbRef.delete();
+      done();
+    });
 
-      const val = await resolve(query);
+    test('work with compound Firestore queries', async (done: jest.DoneCallback) => {
+      const radius = 50;
+      const dbRef: firebase.firestore.Query<firebase.firestore.DocumentData> = firebase.firestore().collection('compound').where('color', '==', 'blue')
+      const point: FirePoint = gfx.point(38, -119);
+      const query: Observable<GeoQueryDocument[]> = gfx.query(dbRef).within(point, radius, 'point');
+      const val: GeoQueryDocument[] = await resolve(query);
       expect(val.length).toBe(1);
       done();
     });
 
-    test('should return 16 positions within 10km radius', async done => {
+    test('should return 16 positions within 10km radius', async (done: jest.DoneCallback) => {
       const radius = 10;
-      const query = ref.within(center, radius, 'pos');
+      const query: Observable<GeoQueryDocument[]> = ref.within(center, radius, 'pos');
       expect(query).toBeInstanceOf(Observable);
 
-      const val = await resolve(query);
+      const val: GeoQueryDocument[] = await resolve(query);
       expect(val.length).toBe(16);
       done();
     });
 
-    test('should work with switchMap', async done => {
+    test('should work with switchMap', async (done: jest.DoneCallback) => {
       const rad = new BehaviorSubject(0.5);
-
-      const query = rad.pipe(
-        switchMap((radius: number) => {
+      const query: Observable<GeoQueryDocument[]> = rad.pipe(
+        switchMap<number, Observable<GeoQueryDocument[]>>((radius: number) => {
           return ref.within(center, radius, 'pos');
         })
       );
-
       expect(query).toBeInstanceOf(Observable);
 
-      const val = await resolve(query);
+      const val: GeoQueryDocument[] = await resolve(query);
       expect(val.length).toBe(4);
       done();
     });
 
-    test('should return 4 positions within 0.5km radius', async done => {
+    test('should return 4 positions within 0.5km radius', async (done: jest.DoneCallback) => {
       const radius = 0.5;
-      const query = ref.within(center, radius, 'pos');
-
-      const val = await resolve(query);
+      const query: Observable<GeoQueryDocument[]> = ref.within(center, radius, 'pos');
+      const val: GeoQueryDocument[] = await resolve(query);
       expect(val.length).toBe(4);
       done();
     });
@@ -123,7 +126,8 @@ describe('GeoFireX', () => {
   });
 
   describe('Custom Operators', () => {
-    test('toGeoJSON should map a collection to GeoJSON', async done => {
+
+    test('toGeoJSON should map a collection to GeoJSON', async (done: jest.DoneCallback) => {
       const val = (await get(of(mockResponse).pipe(toGeoJSON('point')))) as any;
       expect(val.type).toEqual('FeatureCollection');
       done();
@@ -132,21 +136,22 @@ describe('GeoFireX', () => {
 
   describe('Query Shape', () => {
     let ref: GeoFireQuery<any>;
-    let center;
-    let data;
+    let center: FirePoint;
+    let data: any;
+
     beforeAll(async () => {
-      ref = gfx.query('bearings');
+      ref = gfx.query(COLLECTION_BEARINGS);
       center = gfx.point(40.5, -80.0);
       data = await get(ref.within(center, 5, 'pos'));
     });
-    test('should have query metadata', async done => {
 
+    test('should have query metadata', async (done: jest.DoneCallback) => {
         expect(data[0].hitMetadata.bearing).toBeDefined();
         expect(data[0].hitMetadata.distance).toBeDefined();
         done();
-
     });
-    test('should be ordered by distance', async done => {
+
+    test('should be ordered by distance', async (done: jest.DoneCallback) => {
       const first = data[0].hitMetadata.distance;
       const last = data[data.length - 1].hitMetadata.distance;
       expect(first).toBeCloseTo(0.2);
@@ -156,19 +161,25 @@ describe('GeoFireX', () => {
       done();
     });
 
-    test('should update the query in realtime on add/delete', async done => {
-      const query = ref.within(center, 0.4, 'pos');
-      const dbRef = firebase.firestore().doc('bearings/testPoint');
+    test('should update the query in realtime on add/delete', async (done: jest.DoneCallback) => {
+      const radius = 0.4;
+      const query: Observable<GeoQueryDocument[]> = ref.within(center, radius, 'pos');
+      const dbRef = firebase.firestore().collection(COLLECTION_BEARINGS).doc('testPoint');
+      await dbRef.delete();
+      
       let i = 1;
-      query.pipe(take(3)).subscribe(async val => {
+      query.pipe(
+        take(3)
+      )
+      .subscribe((val: GeoQueryDocument[]) => {
         if (i === 1) {
-          expect(val.length).toBe(4);
           i++;
+          expect(val.length).toBe(4);
           dbRef.set({ pos: gfx.point(40.49999, -80) });
         } else if (i === 2) {
+          i++;
           dbRef.delete();
           expect(val.length).toBe(5);
-          i++;
         } else {
           expect(val.length).toBe(4);
           done();
@@ -179,6 +190,6 @@ describe('GeoFireX', () => {
 });
 
 
-function resolve(obsv, n = 1) {
+function resolve(obsv: any, n = 1) {
   return obsv.pipe(take(n)).toPromise();
 }
