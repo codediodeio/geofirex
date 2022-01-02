@@ -1,10 +1,10 @@
-import resolve from 'rollup-plugin-node-resolve';
-import cjs from 'rollup-plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
-import pkg from './package.json'
-// import uglify from 'rollup-plugin-uglify';
-
+// rollup.config.js
 import bundleSize from 'rollup-plugin-bundle-size';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from 'rollup-plugin-typescript2';
+
+import pkg from './package.json';
 
 const globals = {
     rxjs: 'rxjs',
@@ -33,7 +33,7 @@ export default {
         resolve({
             only: [/^@turf\/.*$/]
         }),
-        cjs(),
+        commonjs(),
         bundleSize()
     ]
 };

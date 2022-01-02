@@ -1,6 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testRunner: 'jest-jasmine2' // default is jest-circus (regression issue in jestv27)
 };
 
 // "jest": {

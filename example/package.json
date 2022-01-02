@@ -23,8 +23,8 @@
     "@angular/platform-browser-dynamic": "~8.2.13",
     "@angular/router": "~8.2.13",
     "firebase": "^7.2.3",
-    "geofirex": "^0.1.0",
-    "rxjs": "~6.4.0",
+    "geofirex": "^0.1.1",
+    "rxjs": "^7.5.1",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

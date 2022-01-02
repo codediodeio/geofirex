@@ -65,7 +65,7 @@ describe('GeoFireX', () => {
 
   describe('within(...) queries', () => {
     let ref: GeoFireQuery;
-    let center;
+    let center: FirePoint;
     let dbRef
     beforeEach(() => {
       // dbRef
@@ -74,9 +74,10 @@ describe('GeoFireX', () => {
     });
 
     test('work with compound Firestore queries', async done => {
+      const radius = 50;
       const dbRef = firebase.firestore().collection('compound').where('color', '==', 'blue')
       const point = gfx.point(38, -119);
-      const query = gfx.query(dbRef).within(point, 50, 'point');
+      const query = gfx.query(dbRef).within(point, radius, 'point');
 
       const val = await resolve(query);
       expect(val.length).toBe(1);
@@ -84,7 +85,8 @@ describe('GeoFireX', () => {
     });
 
     test('should return 16 positions within 10km radius', async done => {
-      const query = ref.within(center, 10, 'pos');
+      const radius = 10;
+      const query = ref.within(center, radius, 'pos');
       expect(query).toBeInstanceOf(Observable);
 
       const val = await resolve(query);
@@ -96,8 +98,8 @@ describe('GeoFireX', () => {
       const rad = new BehaviorSubject(0.5);
 
       const query = rad.pipe(
-        switchMap(n => {
-          return ref.within(center, n, 'pos');
+        switchMap((radius: number) => {
+          return ref.within(center, radius, 'pos');
         })
       );
 
@@ -109,7 +111,8 @@ describe('GeoFireX', () => {
     });
 
     test('should return 4 positions within 0.5km radius', async done => {
-      const query = ref.within(center, 0.5, 'pos');
+      const radius = 0.5;
+      const query = ref.within(center, radius, 'pos');
 
       const val = await resolve(query);
       expect(val.length).toBe(4);

@@ -1,6 +1,6 @@
 {
   "name": "geofirex-af",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Realtime Firestore GeoQueries with RxJS",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -28,41 +28,50 @@
     "map",
     "firestore"
   ],
-  "author": "Jeff Delaney",
+  "author": {
+    "name": "Jeff Delaney",
+    "email": "hello@fireship.io",
+    "url": "https://fireship.io"
+  },
+  "contributors": [
+    {
+      "name": "Andre Fortin",
+      "email": "andre@leadcarrot.io",
+      "url": "https://leadcarrot.io"
+    }
+  ],
   "license": "ISC",
   "peerDependencies": {
     "firebase": "^7.21.0",
-    "rxjs": "^6.6.3"
+    "rxjs": "^7.5.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@firebase/firestore-types": "^0.4.3",
-    "@turf/bearing": "^6.0.1",
-    "@turf/distance": "^6.0.1",
-    "@turf/turf": "^5.1.6",
-    "@types/chance": "^1.0.1",
-    "@types/faker": "^4.1.2",
-    "@types/geojson": "^7946.0.4",
-    "@types/jest": "^23.3.14",
-    "@types/lodash": "^4.14.110",
-    "@types/ngeohash": "^0.6.1",
-    "@types/turf": "^3.5.32",
-    "firebase": "^7.21.0",
-    "jest": "^24.9.0",
-    "lodash": "^4.17.10",
-    "rollup": "^1.26.3",
-    "rollup-plugin-analyzer": "^2.0.4",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.2",
+    "@turf/bearing": "^6.5.0",
+    "@turf/distance": "^6.5.0",
+    "@turf/turf": "^6.5.0",
+    "@types/chance": "^1.1.3",
+    "@types/faker": "^5.5.9",
+    "@types/geojson": "^7946.0.8",
+    "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.178",
+    "@types/ngeohash": "^0.6.4",
+    "jest": "^27.4.5",
+    "rollup": "^2.62.0",
+    "rollup-plugin-analyzer": "^4.0.0",
     "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-commonjs": "9.1.0",
-    "rollup-plugin-node-resolve": "3.3.0",
-    "rollup-plugin-sizes": "^0.4.2",
-    "rollup-plugin-typescript2": "0.12.0",
-    "rollup-plugin-uglify": "^3.0.0",
-    "rxjs": "^6.6.3",
-    "ts-jest": "^24.1.0",
+    "rollup-plugin-sizes": "^1.0.4",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "ts-jest": "^27.1.2",
     "ts-lint": "^4.5.1",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.4.1",
-    "tslib": "^1.10.0",
     "tslint": "5.9.1",
     "typescript": "~3.9.0"
   }

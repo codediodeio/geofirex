@@ -85,7 +85,7 @@ export class GeoFireQuery<T = any> {
 
     // Combine all queries concurrently
     const combo = combineLatest(...queries).pipe(
-      map((arr) => {
+      map((arr: any) => {
         // Combine results into a single array
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
 
@@ -111,7 +111,7 @@ export class GeoFireQuery<T = any> {
 
         // Map and sort to final output
         return filtered
-          .map((val) => {
+          .map((val: any) => {
             const { latitude, longitude } = val[field].geopoint;
 
             const hitMetadata = {
@@ -121,7 +121,7 @@ export class GeoFireQuery<T = any> {
             return { ...val, hitMetadata } as GeoQueryDocument & T;
           })
 
-          .sort((a, b) => a.hitMetadata.distance - b.hitMetadata.distance);
+          .sort((a: any, b: any) => a.hitMetadata.distance - b.hitMetadata.distance);
       }),
       shareReplay(1),
       finalize(() => {
@@ -161,14 +161,14 @@ export class GeoFireQuery<T = any> {
     const complete = new Subject();
 
     // Map geohash neighbors to individual queries
-    const queries = area.map((hash) => {
+    const queries = area.map((hash: string) => {
       const query = this.queryPoint(hash, field, opts.category);
       return createStream(query).pipe(snapToData(), takeUntil(complete));
     });
 
     // Combine all queries concurrently
     const combo = combineLatest(...queries).pipe(
-      map((arr) => {
+      map((arr: any) => {
         // Combine results into a single array
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
 
@@ -260,11 +260,11 @@ function snapToData(id = "id") {
 /**
 internal, do not use. Converts callback to Observable. 
  */
-function createStream(input): Observable<any> {
+function createStream(input: any): Observable<any> {
   return new Observable((observer) => {
     const unsubscribe = input.onSnapshot(
-      (val) => observer.next(val),
-      (err) => observer.error(err)
+      (val: any) => observer.next(val),
+      (err: any) => observer.error(err)
     );
     return { unsubscribe };
   });
