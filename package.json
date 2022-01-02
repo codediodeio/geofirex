@@ -14,7 +14,7 @@
     "url": "https://github.com/codediodeio/geofirex.git"
   },
   "scripts": {
-    "test": "jest --coverage --forceExit --runInBand",
+    "test": "jest --coverage --forceExit --runInBand --detectOpenHandles",
     "test:watch": "jest --watchAll",
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -74,5 +74,9 @@
     "ts-node": "^8.4.1",
     "tslint": "5.9.1",
     "typescript": "~3.9.0"
+  },
+  "engines": {
+    "node": ">= 10.0.0",
+    "npm": ">= 6.0.0"
   }
 }

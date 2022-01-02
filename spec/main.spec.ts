@@ -121,8 +121,6 @@ describe('GeoFireX', () => {
       expect(val.length).toBe(4);
       done();
     });
-
-
   });
 
   describe('Custom Operators', () => {
