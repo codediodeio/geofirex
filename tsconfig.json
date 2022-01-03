@@ -1,20 +1,33 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "declaration": true,
-    "importHelpers": true,
-    "outDir": "dist",
-    "lib": ["esnext", "dom"],
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "sourceMap": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "importHelpers": true,
+    "lib": ["esnext", "dom"],
     "module": "es2015",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
+    },
+    "sourceMap": true,
     "target": "es6",
-    // "typeRoots": ["../node_modules/@types"],
-    "types": ["jest", "node"]
+    "types":[
+      "jest",
+      "node",
+    ]
   },
-  "include": ["src"],
+  "include": [
+    "src/**/*",
+    "node_modules/puppeteer-tsd/src/index.d.ts"
+  ],
   "exclude": ["dist/**/*", "spec/**/*", "integration/**/*", "example/**/*"]
 }

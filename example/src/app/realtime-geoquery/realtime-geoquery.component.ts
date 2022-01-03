@@ -1,39 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, interval } from 'rxjs';
-import { tap, map, take, finalize } from 'rxjs/operators';
-import * as firebase from 'firebase/app';
-import * as geofirex from 'geofirex';
-import { GeoFireQuery } from 'geofirex';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Observable, interval } from "rxjs";
+import { tap, map, take, finalize } from "rxjs/operators";
+import * as firebase from "firebase/app";
+import * as geofirex from "geofirex";
+import { GeoFireQuery } from "geofirex";
 
 
 @Component({
-  selector: 'app-realtime-geoquery',
-  templateUrl: './realtime-geoquery.component.html',
-  styleUrls: ['./realtime-geoquery.component.scss']
+  selector: "app-realtime-geoquery",
+  templateUrl: "./realtime-geoquery.component.html",
+  styleUrls: ["./realtime-geoquery.component.scss"]
 })
 export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
   geo = geofirex.init(firebase);
   points: Observable<any[]>;
   testDoc;
 
-  path: 'positions';
+  path: "positions";
   collection: firebase.firestore.CollectionReference;
   geoQuery: GeoFireQuery;
   clicked = false;
-  docId = 'testPoint' + Date.now();
+  docId = "testPoint" + Date.now();
 
   constructor() {
-    this.collection = firebase.firestore().collection('positions');
+    this.collection = firebase.firestore().collection("positions");
     window.onbeforeunload = () => {
       this.collection.doc(this.docId).delete();
     };
   }
 
   ngOnInit() {
-    this.geoQuery = this.geo.query('positions');
+    this.geoQuery = this.geo.query("positions");
     const center = this.geo.point(34, -113);
 
-    this.points = this.geoQuery.within(center, 200, 'pos');
+    this.points = this.geoQuery.within(center, 200, "pos");
     this.testDoc = this.points.pipe(
       map(arr => arr.find(o => o.id === this.docId))
     );
@@ -56,7 +56,7 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
           lng += randB * Math.random();
 
           const point = this.geo.point(lat, lng);
-          const data = { name: 'testPoint', pos: point, allow: true };
+          const data = { name: "testPoint", pos: point, allow: true };
           this.collection.doc(this.docId).set(data);
 
         }),
@@ -72,7 +72,7 @@ export class RealtimeGeoqueryComponent implements OnInit, OnDestroy {
     return doc.id;
   }
   icon(id) {
-    return id.includes('testPoint') ? 'https://goo.gl/dGBkRz' : null;
+    return id.includes("testPoint") ? "https://goo.gl/dGBkRz" : null;
   }
 
   rand() {

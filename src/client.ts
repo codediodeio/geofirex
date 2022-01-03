@@ -1,24 +1,26 @@
-import { FirebaseSDK } from './interfaces';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FirebaseApp } from "firebase/app";
+import { GeoPoint, QueryConstraint } from "firebase/firestore";
 
-import { GeoFireQuery } from './query';
-import { encode, distance, bearing } from './util';
-
-import * as fb from 'firebase/app';
+import { GeoFireQuery } from "./query";
+import { encode, distance, bearing } from "./util";
 
 export interface FirePoint {
-  geopoint: fb.firestore.GeoPoint,
+  geopoint: GeoPoint,
   geohash: string
 }
 
 export class GeoFireClient {
-  constructor(public app: FirebaseSDK) {}
+  constructor(public app: FirebaseApp) { }
+  
   /**
    * Creates reference to a Firestore collection that can be used to make geoqueries
    * @param  {firestore.CollectionReference | firestore.Query | string} ref path to collection
    * @returns {GeoFireQuery}
    */
-  query<T>(ref): GeoFireQuery<T> {
-    return new GeoFireQuery(this.app, ref);
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  query<T>(ref: any, constraint: QueryConstraint = null): GeoFireQuery<T> {
+    return new GeoFireQuery(this.app, ref, constraint);
   }
 
   /**
@@ -29,13 +31,14 @@ export class GeoFireClient {
    */
   point(latitude: number, longitude: number): FirePoint {
     return {
-      geopoint: new (this.app as any).firestore.GeoPoint(
+      geopoint: new GeoPoint(
         latitude,
         longitude
-      ) as fb.firestore.GeoPoint,
+      ) as GeoPoint,
       geohash: encode(latitude, longitude, 9)
-    }
+    };
   }
+
   /**
    * Haversine distance between points
    * @param  {FirePoint} from
@@ -43,11 +46,11 @@ export class GeoFireClient {
    * @returns number
    */
   distance(from: FirePoint, to: FirePoint): number {
-      return distance(
-        [from.geopoint.latitude, from.geopoint.longitude],
-        [to.geopoint.latitude, to.geopoint.longitude]
-      )
-    }
+    return distance(
+      [from.geopoint.latitude, from.geopoint.longitude],
+      [to.geopoint.latitude, to.geopoint.longitude]
+    );
+  }
 
   /**
    * Haversine bearing between points
@@ -56,17 +59,18 @@ export class GeoFireClient {
    * @returns number
    */
   bearing(from: FirePoint, to: FirePoint): number {
-      return bearing(
-        [from.geopoint.latitude, from.geopoint.longitude],
-        [to.geopoint.latitude, to.geopoint.longitude]
-      )
-    }
+    return bearing(
+      [from.geopoint.latitude, from.geopoint.longitude],
+      [to.geopoint.latitude, to.geopoint.longitude]
+    );
   }
+}
+
 /**
  * Initialize the library by passing it your Firebase app
  * @param  {firestore.FirebaseApp} app
  * @returns GeoFireClient
  */
-export function init(app: FirebaseSDK): GeoFireClient {
+export function init(app: FirebaseApp): GeoFireClient {
   return new GeoFireClient(app);
 }

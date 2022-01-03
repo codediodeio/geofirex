@@ -1,20 +1,20 @@
-export const config = {
-  apiKey: 'AIzaSyBTyQHGGFTooUvfR0_PpfVx8TI8Q7K-0HA',
-  authDomain: 'geo-test-c92e4.firebaseapp.com',
-  databaseURL: 'https://geo-test-c92e4.firebaseio.com',
-  projectId: 'geo-test-c92e4',
-  storageBucket: 'geo-test-c92e4.appspot.com',
-  messagingSenderId: '200126650097'
-};
+import { GeoPoint } from "firebase/firestore";
 
-import * as firebase from 'firebase/app';
+export const config = {
+  apiKey: "AIzaSyBTyQHGGFTooUvfR0_PpfVx8TI8Q7K-0HA",
+  authDomain: "geo-test-c92e4.firebaseapp.com",
+  databaseURL: "https://geo-test-c92e4.firebaseio.com",
+  projectId: "geo-test-c92e4",
+  storageBucket: "geo-test-c92e4.appspot.com",
+  messagingSenderId: "200126650097"
+};
 
 export const mockResponse = [
   {
-    title: 'mock1',
+    title: "mock1",
     point: {
-      geopoint: new firebase.firestore.GeoPoint(28, -119),
-      geohash: 'xxxxxxxxx'
+      geopoint: new GeoPoint(28, -119),
+      geohash: "xxxxxxxxx"
     },
     hitMetadata: {
       bearing: 90.2,
@@ -22,10 +22,10 @@ export const mockResponse = [
     }
   },
   {
-    title: 'mock2',
+    title: "mock2",
     point: {
-      geopoint: new firebase.firestore.GeoPoint(38, -90),
-      geohash: 'xxxxxxxxx'
+      geopoint: new GeoPoint(38, -90),
+      geohash: "xxxxxxxxx"
     },
     hitMetadata: {
       bearing: 40.2,

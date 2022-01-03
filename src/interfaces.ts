@@ -1,4 +1,4 @@
-import * as fb from 'firebase/app';
+import * as fb from "firebase/app";
 
 /**
  * Represents Firebase JS (Web) or Firebase Admin (Node)
@@ -16,21 +16,21 @@ export type Coordinates = [Latitude, Longitude];
  * https://tools.ietf.org/html/rfc7946#section-1.4
  */
 export type GeoJsonGeometryTypes =
-  | 'Point'
-  | 'LineString'
-  | 'MultiPoint'
-  | 'Polygon'
-  | 'MultiLineString'
-  | 'MultiPolygon'
-  | 'GeometryCollection';
+  | "Point"
+  | "LineString"
+  | "MultiPoint"
+  | "Polygon"
+  | "MultiLineString"
+  | "MultiPolygon"
+  | "GeometryCollection";
 
 /**
  * The value values for the "type" property of GeoJSON Objects.
  * https://tools.ietf.org/html/rfc7946#section-1.4
  */
 export type GeoJsonTypes =
-  | 'FeatureCollection'
-  | 'Feature'
+  | "FeatureCollection"
+  | "Feature"
   | GeoJsonGeometryTypes;
 
 /**
@@ -104,7 +104,7 @@ export type Geometry =
  * https://tools.ietf.org/html/rfc7946#section-3.1.2
  */
 export interface Point extends GeometryObject {
-  type: 'Point';
+  type: "Point";
   coordinates: Position;
 }
 
@@ -113,7 +113,7 @@ export interface Point extends GeometryObject {
  *  https://tools.ietf.org/html/rfc7946#section-3.1.3
  */
 export interface MultiPoint extends GeometryObject {
-  type: 'MultiPoint';
+  type: "MultiPoint";
   coordinates: Position[];
 }
 
@@ -122,7 +122,7 @@ export interface MultiPoint extends GeometryObject {
  * https://tools.ietf.org/html/rfc7946#section-3.1.4
  */
 export interface LineString extends GeometryObject {
-  type: 'LineString';
+  type: "LineString";
   coordinates: Position[];
 }
 
@@ -131,7 +131,7 @@ export interface LineString extends GeometryObject {
  * https://tools.ietf.org/html/rfc7946#section-3.1.5
  */
 export interface MultiLineString extends GeometryObject {
-  type: 'MultiLineString';
+  type: "MultiLineString";
   coordinates: Position[][];
 }
 
@@ -140,7 +140,7 @@ export interface MultiLineString extends GeometryObject {
  * https://tools.ietf.org/html/rfc7946#section-3.1.6
  */
 export interface Polygon extends GeometryObject {
-  type: 'Polygon';
+  type: "Polygon";
   coordinates: Position[][];
 }
 
@@ -149,7 +149,7 @@ export interface Polygon extends GeometryObject {
  * https://tools.ietf.org/html/rfc7946#section-3.1.7
  */
 export interface MultiPolygon extends GeometryObject {
-  type: 'MultiPolygon';
+  type: "MultiPolygon";
   coordinates: Position[][][];
 }
 
@@ -158,10 +158,11 @@ export interface MultiPolygon extends GeometryObject {
  * https://tools.ietf.org/html/rfc7946#section-3.1.8
  */
 export interface GeometryCollection extends GeometryObject {
-  type: 'GeometryCollection';
+  type: "GeometryCollection";
   geometries: Geometry[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type GeoJsonProperties = { [name: string]: any } | null;
 
 /**
@@ -172,7 +173,7 @@ export interface Feature<
   G extends GeometryObject | null = Geometry,
   P = GeoJsonProperties
 > extends GeoJsonObject {
-  type: 'Feature';
+  type: "Feature";
   /**
    * The feature's geometry
    */
@@ -196,6 +197,6 @@ export interface FeatureCollection<
   G extends GeometryObject | null = Geometry,
   P = GeoJsonProperties
 > extends GeoJsonObject {
-  type: 'FeatureCollection';
+  type: "FeatureCollection";
   features: Array<Feature<G, P>>;
 }
