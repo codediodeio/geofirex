@@ -93,7 +93,7 @@ You now have a realtime stream of data to visualize on a map.
 
 ### `query<T>(ref: CollectionReference | Query | string): GeoFireQuery<T>`
 
-Creates reference to a Firestore collection or query that can be used to make geo-queries.
+Creates a reference to a Firestore collection or query that can be used to make geo-queries.
 
 Example:
 
@@ -120,7 +120,7 @@ import { get } from 'geofirex';
 const hits = await get(query);
 ```
 
-Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
+Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the center point.
 
 Each doc also contains returns _distance_ and _bearing_ calculated on the query on the `hitMetadata` property.
 
@@ -161,7 +161,7 @@ Convenience methods for calculating distance and bearing.
 
 ### `toGeoJSON` Operator
 
-A custom RxJS operator that transforms a collection into a [GeoJSON FeatureCollection](https://macwright.org/2015/03/23/geojson-second-bite.html#featurecollection). Very useful for tools like [MapBox](https://blog.mapbox.com/real-time-maps-for-live-events-fad0b334e4e) that can use GeoJSON to update a realtime data source.
+A custom RxJS operator that transforms a collection into a [GeoJSON FeatureCollection](https://macwright.org/2015/03/23/geojson-second-bite.html#featurecollection). Very useful for tools like [MapBox](https://blog.mapbox.com/real-time-maps-for-live-events-fad0b334e4e) that can use GeoJSON to update a real-time data source.
 
 ```ts
 import { toGeoJSON } from 'geofirex';
@@ -179,7 +179,7 @@ query.pipe( toGeoJSON() )
 
 #### Promises with `get`
 
-Don't need a realtime stream? Convert any query observable to a promise by wrapping it with `get`.
+Don't need a real-time stream? Convert any query observable to a promise by wrapping it with `get`.
 
 ```ts
 import { get } from 'geofirex';
