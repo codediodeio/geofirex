@@ -18,6 +18,7 @@
         "test:watch": "jest --watchAll",
         "build": "rollup -c",
         "dev": "rollup -c -w",
+        "prepare": "npm run build",
         "publish": ""
     },
     "keywords": [
@@ -31,8 +32,8 @@
     "author": "Jeff Delaney",
     "license": "ISC",
     "peerDependencies": {
-        "firebase": "^7.2.0",
-        "rxjs": "^6.2.1"
+        "firebase": "^9.6.1",
+        "rxjs": "^6.6.7"
     },
     "devDependencies": {
         "@firebase/firestore-types": "^0.4.3",
@@ -46,7 +47,7 @@
         "@types/lodash": "^4.14.110",
         "@types/ngeohash": "^0.6.1",
         "@types/turf": "^3.5.32",
-        "firebase": "^7.2.3",
+        "firebase": "^9.6.1",
         "jest": "^24.9.0",
         "lodash": "^4.17.10",
         "rollup": "^1.26.3",
@@ -57,7 +58,7 @@
         "rollup-plugin-sizes": "^0.4.2",
         "rollup-plugin-typescript2": "0.12.0",
         "rollup-plugin-uglify": "^3.0.0",
-        "rxjs": "^6.2.1",
+        "rxjs": "^6.6.7",
         "ts-jest": "^24.1.0",
         "ts-lint": "^4.5.1",
         "ts-loader": "^6.2.1",

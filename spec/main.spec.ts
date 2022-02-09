@@ -1,5 +1,4 @@
-import * as firebase from 'firebase/app';
-import 'firebase/firestore';
+import { FirebaseSDK } from '../src/interfaces';
 
 import { config, mockResponse } from './util';
 
@@ -14,20 +13,25 @@ import { neighbors, distance, bearing } from '../src/util';
 
 import { GeoFireClient, FirePoint } from '../src/client';
 
+import { initializeApp, getApps } from 'firebase/app';
+import { Firestore, getFirestore, GeoPoint, query, collection, where, doc, setDoc, deleteDoc } from 'firebase/firestore';
+
 describe('GeoFireX', () => {
   let gfx: GeoFireClient;
+  let app: FirebaseSDK;
+  let db: Firestore;
   beforeAll(() => {
-    firebase.initializeApp(config);
-    const firestore = firebase.firestore();
+    app = initializeApp(config);
+    db = getFirestore(app);
     // const settings = { timestampsInSnapshots: true };
     // firestore.settings(settings);
 
-    gfx = new GeoFireClient( firebase );
+    gfx = new GeoFireClient( app );
   });
 
   test('says hello', () => {
-    expect(firebase.apps.length).toBe(1);
-    expect(gfx.app).toBe( firebase );
+    expect(getApps().length).toBe(1);
+    expect(gfx.app).toBe( app );
   });
 
   describe('FirePoint', () => {
@@ -37,7 +41,7 @@ describe('GeoFireX', () => {
     });
 
     test('should initilize an object with a Firestore GeoPoint', () => {
-      expect(point.geopoint).toBeInstanceOf(firebase.firestore.GeoPoint);
+      expect(point.geopoint).toBeInstanceOf(GeoPoint);
     });
 
     test('should create a GeoHash', () => {
@@ -66,19 +70,17 @@ describe('GeoFireX', () => {
   describe('within(...) queries', () => {
     let ref: GeoFireQuery;
     let center;
-    let dbRef
     beforeEach(() => {
-      // dbRef
       ref = gfx.query('bearings');
       center = gfx.point(40.5, -80.0);
     });
 
     test('work with compound Firestore queries', async done => {
-      const dbRef = firebase.firestore().collection('compound').where('color', '==', 'blue')
+      const dbRef = query(collection(db, "compound"), where("color", "==", "blue"));
       const point = gfx.point(38, -119);
-      const query = gfx.query(dbRef).within(point, 50, 'point');
+      const gfxQuery = gfx.query(dbRef).within(point, 50, 'point');
 
-      const val = await resolve(query);
+      const val = await resolve(gfxQuery);
       expect(val.length).toBe(1);
       done();
     });
@@ -155,15 +157,15 @@ describe('GeoFireX', () => {
 
     test('should update the query in realtime on add/delete', async done => {
       const query = ref.within(center, 0.4, 'pos');
-      const dbRef = firebase.firestore().doc('bearings/testPoint');
+      const docRef = doc(db, "bearings/testPoint");
       let i = 1;
       query.pipe(take(3)).subscribe(async val => {
         if (i === 1) {
           expect(val.length).toBe(4);
           i++;
-          dbRef.set({ pos: gfx.point(40.49999, -80) });
+          await setDoc(docRef, { pos: gfx.point(40.49999, -80) });
         } else if (i === 2) {
-          dbRef.delete();
+          await deleteDoc(docRef);
           expect(val.length).toBe(5);
           i++;
         } else {

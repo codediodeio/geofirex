@@ -1,5 +1,3 @@
-// import { firestore } from './interfaces';
-
 import { Observable, combineLatest, Subject } from 'rxjs';
 import {
   shareReplay,
@@ -12,13 +10,12 @@ import {
 import { FeatureCollection, Geometry } from './interfaces';
 import { neighbors, toGeoJSONFeature, distance, bearing, setPrecision } from './util';
 
-import * as fb from 'firebase/app';
 import { FirebaseSDK } from './interfaces';
 import { FirePoint } from './client';
 
-export type QueryFn = (
-  ref: fb.firestore.CollectionReference
-) => fb.firestore.Query;
+import { getFirestore, CollectionReference, Query, QuerySnapshot, onSnapshot, collection, query, orderBy, startAt, endAt } from 'firebase/firestore';
+
+export type QueryFn = (ref: CollectionReference) => Query;
 
 export interface GeoQueryOptions {
   units?: 'km';
@@ -38,10 +35,10 @@ export interface GeoQueryDocument {
 export class GeoFireQuery<T = any> {
   constructor(
     private app: FirebaseSDK,
-    private ref?: fb.firestore.CollectionReference | fb.firestore.Query | string
+    private ref?: CollectionReference | Query | string
   ) {
     if (typeof ref === 'string') {
-      this.ref = this.app.firestore().collection(ref);
+      this.ref = collection(getFirestore(this.app), ref);
     }
   }
   // GEO QUERIES
@@ -81,7 +78,7 @@ export class GeoFireQuery<T = any> {
     });
 
     // Combine all queries concurrently
-    const combo = combineLatest(...queries).pipe(
+    const combo = combineLatest(queries).pipe(
       map(arr => {
         // Combine results into a single array
         const reduced = arr.reduce((acc, cur) => acc.concat(cur));
@@ -132,10 +129,12 @@ export class GeoFireQuery<T = any> {
 
   private queryPoint(geohash: string, field: string) {
     const end = geohash + '~';
-    return (this.ref as fb.firestore.CollectionReference)
-      .orderBy(`${field}.geohash`)
-      .startAt(geohash)
-      .endAt(end);
+    return query(
+      this.ref as CollectionReference,
+      orderBy(`${field}.geohash`),
+      startAt(geohash),
+      endAt(end)
+    );
   }
 
   // withinBbox(field: string, bbox: number, opts = defaultOpts) {
@@ -153,7 +152,7 @@ export class GeoFireQuery<T = any> {
 }
 
 function snapToData(id = 'id') {
-  return map((querySnapshot: fb.firestore.QuerySnapshot) =>
+  return map((querySnapshot: QuerySnapshot) =>
     querySnapshot.docs.map(v => {
       return {
         ...(id ? { [id]: v.id } : null),
@@ -168,9 +167,10 @@ internal, do not use. Converts callback to Observable.
  */
 function createStream(input): Observable<any> {
   return new Observable(observer => {
-    const unsubscribe = input.onSnapshot(
-      val => observer.next(val),
-      err => observer.error(err)
+    const unsubscribe = onSnapshot(
+      input,
+      (snapshot) => observer.next(snapshot),
+      (error) => observer.error(error)
     );
     return { unsubscribe };
   });
