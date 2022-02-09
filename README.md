@@ -27,12 +27,16 @@ Web:
 
 ```js
 // Init Firebase
-import firebase from 'firebase/app';
-firebase.initializeApp(yourConfig);
+import { initializeApp } from 'firebase/app';
+const app = initializeApp(yourConfig);
+
+// Init Firestore
+import { getFirestore } from 'firebase/firestore';
+const db = getFirestore(app);
 
 // Init GeoFireX
 import geofirex from 'geofirex';
-const geo = geofirex.init(firebase);
+const geo = geofirex.init(app);
 ```
 
 Node.js with the Firebase Admin SDK:
@@ -47,8 +51,8 @@ const geo = require('geofirex').init(admin);
 With Typescript:
 
 ```ts
-import * as geofirex from 'geofirex'; 
-const geo = geofirex.init(firebase);
+import * as geofirex from 'geofirex';
+const geo = geofirex.init(app);
 ```
 
 ### Write Geolocation Data
@@ -56,11 +60,11 @@ const geo = geofirex.init(firebase);
 Next, add some geolocation data in your database using the main Firebase SDK. You can add multiple points to a single doc. Calling `geo.point(lat, lng)` creates an object with a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). Data must be saved in this format to be queried.
 
 ```ts
-const cities = firestore().collection('cities');
+const cities = collection(db, 'cities');
 
 const position = geo.point(40, -119);
 
-cities.add({ name: 'Phoenix', position });
+addDoc(cities, { name: 'Phoenix', position });
 ```
 
 
@@ -102,7 +106,7 @@ const geoRef = geo.query('cities');
 
 // OR make a geoquery on top of a firestore query
 
-const firestoreRef = firestore().collection('cities').where('name', '==', 'Phoenix');
+const firestoreRef = query(collection(db, 'cities'), where('name', '==', 'Phoenix'));
 const geoRef = geo.query(firestoreRef);
 ```
 
@@ -201,7 +205,7 @@ Example:
 
 ```ts
 // Make a query like you normally would
-const users = firestore().collection('users').where('status', '==', 'online');
+const users = query(collection(db, 'users'), where('status', '==', 'online'));
 
 
 const nearbyOnlineUsers = geo.query(users).within(center, radius, field);
