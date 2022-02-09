@@ -7,13 +7,13 @@ export const config = {
   messagingSenderId: '200126650097'
 };
 
-import * as firebase from 'firebase/app';
+import { GeoPoint } from 'firebase/firestore';
 
 export const mockResponse = [
   {
     title: 'mock1',
     point: {
-      geopoint: new firebase.firestore.GeoPoint(28, -119),
+      geopoint: new GeoPoint(28, -119),
       geohash: 'xxxxxxxxx'
     },
     hitMetadata: {
@@ -24,7 +24,7 @@ export const mockResponse = [
   {
     title: 'mock2',
     point: {
-      geopoint: new firebase.firestore.GeoPoint(38, -90),
+      geopoint: new GeoPoint(38, -90),
       geohash: 'xxxxxxxxx'
     },
     hitMetadata: {
